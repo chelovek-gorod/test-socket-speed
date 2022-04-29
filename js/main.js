@@ -130,9 +130,9 @@ function getConnect(socket, data) {
 
 function getUpdate(data) {
   timeStampServer = data.timeStampServer;
-  if (data.timeoutServer) serverSpan.innerText = (+serverSpan.innerText / counter) + data.timeoutServer;
+  if (data.timeoutServer) serverSpan.innerText = ((+serverSpan.innerText / counter) + data.timeoutServer) / 2;
   counter++;
-  clientSpan.innerText = (+clientSpan.innerText / counter) + (Date.now() - data.timeStampClient);
+  clientSpan.innerText = ((+clientSpan.innerText / counter) + (Date.now() - data.timeStampClient)) / 2;
 }
 
 function sendUpdate() {
