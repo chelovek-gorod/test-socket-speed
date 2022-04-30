@@ -174,13 +174,13 @@ function getUpdate(data) {
   } else {
     clientSpan.innerText = Date.now() - data.timeStampClient;
   }
-  counter++;
+  counter++; console.log(data);
 }
 
 function updateDataChangeInfo() {
   if (counter > 2) {
-    clientSpan.innerText = clientTOData.toFixed();
-    serverSpan.innerText = serverTOData.toFixed();
+    clientSpan.innerText = clientTOData.toFixed(1);
+    serverSpan.innerText = serverTOData.toFixed(1);
 
     clientServerClientSpan.innerText = (1000 / clientTOData).toFixed(2);
     serverClientServerSpan.innerText = (1000 / serverTOData).toFixed(2);
