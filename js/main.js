@@ -175,6 +175,6 @@ function getUpdate(data) {
 }
 
 function updateDataChangeInfo() {
-  clientServerClientSpan.innerText = 1000 / (+clientSpan.innerText);
-  serverClientServerSpan.innerText = 1000 / (+serverSpan.innerText);
+  clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(1);
+  serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(1);
 }
