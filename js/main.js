@@ -162,11 +162,11 @@ function getUpdate(data) {
   timeStampServer = data.timeStampServer;
   if (counter > 0) {
     // update client timeout
-    clientSpan.innerText = ((+clientSpan.innerText * counter) + (Date.now() - data.timeStampClient)) / (counter + 1);
+    clientSpan.innerText = (((+clientSpan.innerText * counter) + (Date.now() - data.timeStampClient)) / (counter + 1)).toFixed();
 
     // update server timeout
     if (counter === 1) serverSpan.innerText = data.timeoutServer;
-    else serverSpan.innerText = ((+serverSpan.innerText * (counter - 1)) + data.timeoutServer) / counter;
+    else serverSpan.innerText = (((+serverSpan.innerText * (counter - 1)) + data.timeoutServer) / counter).toFixed();
     
   } else {
     clientSpan.innerText = Date.now() - data.timeStampClient;
@@ -175,8 +175,8 @@ function getUpdate(data) {
 }
 
 function updateDataChangeInfo() {
-  if (frame > 60) {
-    clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(1);
-    serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(1);
+  if (counter > 2) {
+    clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(2);
+    serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(2);
   }
 }
