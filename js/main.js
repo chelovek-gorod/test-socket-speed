@@ -15,10 +15,12 @@ const setSPSSpan = document.getElementById('setSPSSpan');
 const clientServerClientSpan = document.getElementById('clientServerClientSpan');
 const serverClientServerSpan = document.getElementById('serverClientServerSpan');
 
-const counterSpan = document.getElementById('counterSpan');
+const counterCSSpan = document.getElementById('counterCSSpan');
+const counterSSSpan = document.getElementById('counterSSSpan');
 const frameSpan = document.getElementById('frameSpan');
 
-let counter = 0;
+let counterClientSends = 0;
+let counterServerSends = 0;
 
 let clientTOData = 0;
 let serverTOData = 0;
@@ -84,7 +86,8 @@ function animate() {
 
   frame++;
 
-  counterSpan.innerText = counter;
+  counterCSSpan.innerText = counterClientSends;
+  counterSSSpan.innerText = counterServerSends;
   frameSpan.innerText = frame;
   
   window.requestAnimationFrame(animate);
@@ -162,19 +165,28 @@ function sendUpdate() {
 }
 
 function getUpdate(data) {
-  timeStampServer = data.timeStampServer; console.log(data);
-  if (counter > 0) {
-    // update client timeout
-    clientTOData = ((clientTOData * counter) + (Date.now() - data.timeStampClient)) / (counter + 1);
 
-    // update server timeout
-    if (counter === 1) serverSpan.innerText = data.timeoutServer;
-    else serverTOData = ((serverTOData * (counter - 1)) + data.timeoutServer) / counter;
-    
+  timeStampServer = data.timeStampServer;
+
+  if (counterClientSends) {
+    // update client timeout
+    clientTOData = ((clientTOData * counterClientSends) + (Date.now() - data.timeStampClient)) / (counterClientSends + 1);
   } else {
-    clientSpan.innerText = Date.now() - data.timeStampClient;
+    // get first client timeout
+    clientTOData = Date.now() - data.timeStampClient;
   }
-  counter++; console.log(data);
+  counterClientSends++;
+
+  if (data.timeoutServer) {
+    if (counterServerSends) {
+      // update server timeout
+      serverTOData = ((serverTOData * counterServerSends) + data.timeoutServer) / (counterServerSends + 1);
+    } else {
+      // get first server timeout
+      serverTOData = data.timeoutServer;
+    }
+    counterServerSends++;
+  }
 }
 
 function updateDataChangeInfo() {
