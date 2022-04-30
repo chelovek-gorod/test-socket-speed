@@ -190,11 +190,13 @@ function getUpdate(data) {
 }
 
 function updateDataChangeInfo() {
-  if (counter > 2) {
+  if (counterClientSends) {
     clientSpan.innerText = clientTOData.toFixed(1);
-    serverSpan.innerText = serverTOData.toFixed(1);
-
     clientServerClientSpan.innerText = (1000 / clientTOData).toFixed(2);
+  }
+
+  if (counterServerSends) {
+    serverSpan.innerText = serverTOData.toFixed(1);
     serverClientServerSpan.innerText = (1000 / serverTOData).toFixed(2);
   }
 }
