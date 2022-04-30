@@ -18,7 +18,7 @@ const serverClientServerSpan = document.getElementById('serverClientServerSpan')
 const counterSpan = document.getElementById('counterSpan');
 const frameSpan = document.getElementById('frameSpan');
 
-let counter = 0;
+let counter = -1;
 
 let connectionIs = false;
 let myId;
