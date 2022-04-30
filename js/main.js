@@ -162,7 +162,7 @@ function sendUpdate() {
 }
 
 function getUpdate(data) {
-  timeStampServer = data.timeStampServer;
+  timeStampServer = data.timeStampServer; console.log(data);
   if (counter > 0) {
     // update client timeout
     clientTOData = ((clientTOData * counter) + (Date.now() - data.timeStampClient)) / (counter + 1);
