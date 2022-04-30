@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-000 [29-04-2022]';
+const client_version = 'CV-000 [30-04-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -12,6 +12,11 @@ const connectionId = document.getElementById('connectionId');
 const clientSpan = document.getElementById('clientSpan');
 const serverSpan = document.getElementById('serverSpan');
 const setSPSSpan = document.getElementById('setSPSSpan');
+const clientServerClientSpan = document.getElementById('clientServerClientSpan');
+const serverClientServerSpan = document.getElementById('serverClientServerSpan');
+
+const counterSpan = document.getElementById('counterSpan');
+const frameSpan = document.getElementById('frameSpan');
 
 let counter = 0;
 
@@ -72,7 +77,13 @@ function animate() {
      if (connectionIs) sendUpdate();
   }
 
+  if ((frame % 60) === 0) updateDataChangeInfo();
+
   frame++;
+
+  counterSpan.innerText = counter;
+  frameSpan.innerText = frame;
+  
   window.requestAnimationFrame(animate);
 }
 setTimeout(animate, 5000);
@@ -140,16 +151,30 @@ function getConnect(socket, data) {
   connectionIs = true;
 }
 
-function getUpdate(data) {
-  timeStampServer = data.timeStampServer;
-  if (data.timeoutServer) serverSpan.innerText = ((+serverSpan.innerText / counter) + data.timeoutServer) / 2;
-  counter++;
-  clientSpan.innerText = ((+clientSpan.innerText / counter) + (Date.now() - data.timeStampClient)) / 2;
-}
-
 function sendUpdate() {
   SOCKET.send(JSON.stringify({
     action: 'update',
     data: { id: myId, timeStampServer: timeStampServer, timeStampClient: Date.now() }
   }));
+}
+
+function getUpdate(data) {
+  timeStampServer = data.timeStampServer;
+  if (counter > 0) {
+    // update client timeout
+    clientSpan.innerText = ((+clientSpan.innerText * counter) + (Date.now() - data.timeStampClient)) / (counter + 1);
+
+    // update server timeout
+    if (counter === 1) serverSpan.innerText = data.timeoutServer;
+    else serverSpan.innerText = ((+serverSpan.innerText * (counter - 1)) + data.timeoutServer) / counter;
+    
+  } else {
+    clientSpan.innerText = Date.now() - data.timeStampClient;
+  }
+  counter++;
+}
+
+function updateDataChangeInfo() {
+  clientServerClientSpan.innerText = 1000 / (+clientSpan.innerText);
+  serverClientServerSpan.innerText = 1000 / (+serverSpan.innerText);
 }

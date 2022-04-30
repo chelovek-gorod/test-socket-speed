@@ -40,6 +40,13 @@
             <div>Client timeout: <span id="clientSpan">0</span> ms</div>
             <div>Server timeout: <span id="serverSpan">0</span> ms</div>
             <br>
+            <div>Client -> server() -> client: <span id="clientServerClientSpan">0</span> times per second</div>
+            <div>Server -> client() -> server: <span id="serverClientServerSpan">0</span> times per second</div>
+
+            <br>
+            <div>Counter size: <span id="counterSpan">0</span>; Frames: <span id="frameSpan">0</span></div>
+            <br>
+
             <div>sockets per second send: <span id="setSPSSpan">---</span></div>
             <div>use keys "+" or "-" to change sending speed</div>
             <div><button onclick="clickAdd();">+</button> <button onclick="clickSubtract();">-</button></div>
