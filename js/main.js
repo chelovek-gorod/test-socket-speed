@@ -175,6 +175,8 @@ function getUpdate(data) {
 }
 
 function updateDataChangeInfo() {
-  clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(1);
-  serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(1);
+  if (frame > 60) {
+    clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(1);
+    serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(1);
+  }
 }
