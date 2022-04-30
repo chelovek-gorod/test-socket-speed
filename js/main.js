@@ -18,7 +18,10 @@ const serverClientServerSpan = document.getElementById('serverClientServerSpan')
 const counterSpan = document.getElementById('counterSpan');
 const frameSpan = document.getElementById('frameSpan');
 
-let counter = -1;
+let counter = 0;
+
+let clientTOData = 0;
+let serverTOData = 0;
 
 let connectionIs = false;
 let myId;
@@ -162,11 +165,11 @@ function getUpdate(data) {
   timeStampServer = data.timeStampServer;
   if (counter > 0) {
     // update client timeout
-    clientSpan.innerText = (((+clientSpan.innerText * counter) + (Date.now() - data.timeStampClient)) / (counter + 1)).toFixed();
+    clientTOData = ((clientTOData * counter) + (Date.now() - data.timeStampClient)) / (counter + 1);
 
     // update server timeout
     if (counter === 1) serverSpan.innerText = data.timeoutServer;
-    else serverSpan.innerText = (((+serverSpan.innerText * (counter - 1)) + data.timeoutServer) / counter).toFixed();
+    else serverTOData = ((serverTOData * (counter - 1)) + data.timeoutServer) / counter;
     
   } else {
     clientSpan.innerText = Date.now() - data.timeStampClient;
@@ -176,7 +179,10 @@ function getUpdate(data) {
 
 function updateDataChangeInfo() {
   if (counter > 2) {
-    clientServerClientSpan.innerText = (1000 / (+clientSpan.innerText)).toFixed(2);
-    serverClientServerSpan.innerText = (1000 / (+serverSpan.innerText)).toFixed(2);
+    clientSpan.innerText = clientTOData.toFixed();
+    serverSpan.innerText = serverTOData.toFixed();
+
+    clientServerClientSpan.innerText = (1000 / clientTOData).toFixed(2);
+    serverClientServerSpan.innerText = (1000 / serverTOData).toFixed(2);
   }
 }
