@@ -54,6 +54,18 @@ document.addEventListener('keyup', (event) => {
   spsStep = Math.round( 60 / spsArr[sps] );
 });
 
+function openNewClient() {
+  window.open( 'https://chelovek-gorod.github.io/test-socket-speed/', '_blank' );
+}
+
+function restartPage() {
+  document.location.reload();
+}
+
+/*****************
+ *  FRAME TIMER
+ */
+
 let frame = 0;
 function animate() {
   if ((frame % 60) % spsStep === 0) {
