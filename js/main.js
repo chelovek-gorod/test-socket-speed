@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-000 [30-04-2022]';
+const client_version = 'CV-004 [4-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -9,99 +9,131 @@ console.log('CLIENT', client_version);
 
 const clientsCounter = document.getElementById('clientsCounter');
 const connectionId = document.getElementById('connectionId');
-const clientSpan = document.getElementById('clientSpan');
-const serverSpan = document.getElementById('serverSpan');
-const setSPSSpan = document.getElementById('setSPSSpan');
-const clientServerClientSpan = document.getElementById('clientServerClientSpan');
-const serverClientServerSpan = document.getElementById('serverClientServerSpan');
 
-const counterCSSpan = document.getElementById('counterCSSpan');
-const counterSSSpan = document.getElementById('counterSSSpan');
-const frameSpan = document.getElementById('frameSpan');
-
-let counterClientSends = 0;
-let counterServerSends = 0;
-
-let clientTOData = 0;
-let serverTOData = 0;
+const directionSpan = document.getElementById('directionSpan');
+const speedSpan = document.getElementById('speedSpan');
 
 let connectionIs = false;
 let myId;
-let sps = 6;
-let spsArr = [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60];
-let spsStep = Math.round( 60 / spsArr[sps] ); // 60 / 12 = 5; 
 
-setSPSSpan.innerText = spsArr[sps];
-
-let timeStampServer = 0;
+let updateTimeout = 20;
 
 /*****************
  *  CONTROLLERS
  */
 
-function clickAdd() {
-  if (sps < 11) sps++;
-  setSPSSpan.innerText = spsArr[sps];
-  spsStep = Math.round( 60 / spsArr[sps] );
-}
+const RAD = Math.PI / 180;
 
-function clickSubtract() {
-  if (sps > 0) sps--;
-  setSPSSpan.innerText = spsArr[sps];
-  spsStep = Math.round( 60 / spsArr[sps] );
-}
+// turns and turn speed
+let toLeftIs = false;
+let toRightIs = false;
+let turnSpeed = 1.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
+
+// speed and acceleration
+let minSpeed = 1;
+let cruiseSpeed = 4
+let maxSpeed = 9;
+let accPass = 0.02;
+let accHard = 0.05;
+let accelerationIs = false;
+let slowdownIs = false;
+
+let myPlane;
+
+document.addEventListener('keydown', (event) => {
+  switch(event.code) {
+    case 'KeyA' : toLeftIs = true; break;
+    case 'KeyD' : toRightIs = true; break;
+    case 'KeyW' : accelerationIs = true; break;
+    case 'KeyS' : slowdownIs = true; break;
+  }
+});
 
 document.addEventListener('keyup', (event) => {
   switch(event.code) {
-    case 'NumpadAdd' :;
-    case 'Equal' : if (sps < 11) sps++; break;
-
-    case 'NumpadSubtract' :;
-    case 'Minus' : if (sps > 0) sps--; break;
+    case 'KeyA' : toLeftIs = false; break;
+    case 'KeyD' : toRightIs = false; break;
+    case 'KeyW' : accelerationIs = false; break;
+    case 'KeyS' : slowdownIs = false; break;
   }
-
-  setSPSSpan.innerText = spsArr[sps];
-  spsStep = Math.round( 60 / spsArr[sps] );
 });
 
-function openNewClient() {
-  window.open( 'https://chelovek-gorod.github.io/test-socket-speed/', '_blank' );
-}
-
-function restartPage() {
-  document.location.reload();
-}
-
 /*****************
- *  FRAME TIMER
+ *  CANVAS
  */
 
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const C_WIDTH = canvas.width = 1200;
+const C_HEIGHT = canvas.height = 600;
+
+const planeImage = new Image();
+planeImage.src = './src/images/planes.png';
+
+const planeFrames = 4;
+const planeWidth = 100;
+const planeHeight = 100;
+const planeHalfWidth = 50;
+const planeHalfHeight = 50;
+
+class Plane {
+  constructor(id) {
+    this.id = id;
+    this.x = (C_WIDTH / 2) - planeHalfWidth;
+    this.y = C_HEIGHT + planeHalfHeight;
+    this.direction = 270;
+    this.speed = cruiseSpeed;
+  }
+};
+let planesArr = [];
+
+function drawPlane (image, frame, plane) {
+  let {id, x, y, direction, speed } = plane;
+  let frameY = (id != myId) ? planeHeight : 0;
+  ctx.save();
+  ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
+  ctx.rotate(direction * RAD);
+  ctx.translate(-(x + planeHalfWidth), -(y + planeHalfHeight));
+  ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
+  ctx.restore();
+}
+
 let frame = 0;
+const background = new Image();
+background.src = './src/images/map.jpg';
+
 function animate() {
-  if ((frame % 60) % spsStep === 0) {
-     if (connectionIs) sendUpdate();
+  ctx.clearRect(0, 0, C_WIDTH, C_HEIGHT);
+    
+  if (connectionIs) {
+    ctx.drawImage(background,0,0);
+
+    let planeFrame = (frame % planeFrames) * planeWidth;
+    planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
+
+    if (frame % 12 == 0) {
+      clientsCounter.innerText = planesArr.length;
+      directionSpan.innerHTML = myPlane.direction;
+      speedSpan.innerHTML = Math.round(myPlane.speed * 50);
+    }
   }
 
-  if ((frame % 60) === 0) updateDataChangeInfo();
-
   frame++;
-
-  counterCSSpan.innerText = counterClientSends;
-  counterSSSpan.innerText = counterServerSends;
-  frameSpan.innerText = frame;
-  
   window.requestAnimationFrame(animate);
 }
-setTimeout(animate, 5000);
+animate();
 
 /*****************
  *  CONNECTION
  */
 
-// 'ws://192.168.100.51:6789';
 // 'wss://mars-game-server.herokuapp.com'
+// 'wss://mars-server-euro.herokuapp.com'
 // 'ws://localhost:6789'
-const socketURL = 'wss://mars-test-socket.herokuapp.com'; 
+// 'ws://192.168.100.51:6789'
+// 'ws://192.168.0.122:6789'
+const socketURL = 'wss://mars-game-server.herokuapp.com';
 let SOCKET;
 
 function connection() {
@@ -117,14 +149,17 @@ function connection() {
   socket.onmessage = function (message) {
     let { action, data } = JSON.parse(message.data);
     switch (action) {
-      case 'connect' : getConnect(socket, data); break;
+      case 'connect' :
+        SOCKET = socket;
+        getConnect(data);
+        break;
+      case 'plane' : getPlane(data); break;
       case 'update' : getUpdate(data); break;
-      default : getWrongActionInResponse(action, data);
+      default : getUnknownAction(action, data);
     }
   };
   
   socket.onclose = function(event) {
-    connectionIs = false;
     if (event.wasClean) {
       console.group('-- socket on close --');
       console.log(' - clean close connection');
@@ -141,62 +176,65 @@ function connection() {
   };
   
   socket.onerror = function(error) {
-    connectionIs = false;
     console.group('-- socket on error --');
-    console.log(' - connection error:');
-    console.log(' - ' + error);
+    console.log('connection error:');
+    console.log(error);
     console.groupEnd();
   };
 
 }
 connection();
 
-function getConnect(socket, data) {
-  SOCKET = socket;
-  connectionId.innerText = myId =  data;
-  connectionIs = true;
-}
-
-function sendUpdate() {
-  SOCKET.send(JSON.stringify({
-    action: 'update',
-    data: { id: myId, timeStampServer: timeStampServer, timeStampClient: Date.now() }
-  }));
+function getConnect(data) {
+  myId = data;
+  connectionId.innerText = data;
+  myPlane = new Plane(myId);
+  SOCKET.send(JSON.stringify({ action: 'plane', data: myPlane }));
+  sendUpdate();
 }
 
 function getUpdate(data) {
-
-  timeStampServer = data.timeStampServer;
-
-  if (counterClientSends) {
-    // update client timeout
-    clientTOData = ((clientTOData * counterClientSends) + (Date.now() - data.timeStampClient)) / (counterClientSends + 1);
-  } else {
-    // get first client timeout
-    clientTOData = Date.now() - data.timeStampClient;
-  }
-  counterClientSends++;
-
-  if (data.timeoutServer) {
-    if (counterServerSends) {
-      // update server timeout
-      serverTOData = ((serverTOData * counterServerSends) + data.timeoutServer) / (counterServerSends + 1);
-    } else {
-      // get first server timeout
-      serverTOData = data.timeoutServer;
-    }
-    counterServerSends++;
-  }
+  planesArr = data;
+  
+  if (planesArr.length > 0) connectionIs = true;
+  else connectionIs = false;
 }
 
-function updateDataChangeInfo() {
-  if (counterClientSends) {
-    clientSpan.innerText = clientTOData.toFixed(1);
-    clientServerClientSpan.innerText = (1000 / clientTOData).toFixed(2);
+function sendUpdate() {
+  let { x, y, direction, speed } = myPlane;
+
+  let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
+  if (turnAngle != 0) {
+    direction = (360 + direction + turnAngle) % 360;
   }
 
-  if (counterServerSends) {
-    serverSpan.innerText = serverTOData.toFixed(1);
-    serverClientServerSpan.innerText = (1000 / serverTOData).toFixed(2);
+  if (accelerationIs != slowdownIs) {
+    if (accelerationIs) speed = (speed < maxSpeed) ? speed + accHard : maxSpeed;
+    if (slowdownIs) speed = (speed > minSpeed) ? speed - accHard : minSpeed;
+  } else if (speed != cruiseSpeed) {
+    if (speed < cruiseSpeed) speed = ((speed + accPass) < cruiseSpeed) ? (speed + accPass) : cruiseSpeed;
+    if (speed > cruiseSpeed) speed = ((speed - accPass) > cruiseSpeed) ? (speed - accPass) : cruiseSpeed;
   }
+
+  let angle = RAD * direction;
+  x += Math.cos(angle) * speed;
+  y += Math.sin(angle) * speed;
+
+  if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
+  else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
+
+  if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
+  else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
+
+  myPlane = { id: myId, x: x, y: y, direction: direction, speed: speed }
+  SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
+
+  setTimeout(sendUpdate, updateTimeout);
+}
+
+function getUnknownAction(action, data) {
+  console.group('-- unknown action --');
+  console.log('action:', action);
+  console.log(data);
+  console.groupEnd();
 }

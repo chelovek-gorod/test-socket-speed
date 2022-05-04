@@ -36,26 +36,10 @@
         <div id="connectionInformation">
             <div>clients online: <span id="clientsCounter">0</span></div>
             <div>my connection id: <span id="connectionId">---</span></div>
-            <br>
-            <div>Client timeout: <span id="clientSpan">0</span> ms</div>
-            <div>Server timeout: <span id="serverSpan">0</span> ms</div>
-            <br>
-            <div>Client -> server() -> client: <span id="clientServerClientSpan">0</span> times per second</div>
-            <div>Server -> client() -> server: <span id="serverClientServerSpan">0</span> times per second</div>
-
-            <br>
-            <div>
-                Counter Client sends: <span id="counterCSSpan">0</span>;
-                Counter Server sends: <span id="counterSSSpan">0</span>;
-                Frames: <span id="frameSpan">0</span></div>
-            <br>
-
-            <div>sockets per second send: <span id="setSPSSpan">---</span></div>
-            <div>use keys "+" or "-" to change sending speed</div>
-            <div><button onclick="clickAdd();">+</button> <button onclick="clickSubtract();">-</button></div>
-            <div><button onclick="openNewClient();">open new client</button></div>
-            <div><button onclick="restartPage();"> restart page  </button></div>
+            <div>direction: <span id="directionSpan">---</span>&#176;</div>
+            <div>speed: <span id="speedSpan">---</span> km/h</div>
         </div>
+        <canvas id="canvas"></canvas>
         <script src="./js/main.js"></script>
     </body>
 </html>
