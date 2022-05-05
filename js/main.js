@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-004 [4-05-2022]';
+const client_version = 'CV-000 [5-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -12,6 +12,9 @@ const connectionId = document.getElementById('connectionId');
 
 const directionSpan = document.getElementById('directionSpan');
 const speedSpan = document.getElementById('speedSpan');
+
+const serverSpeedSpan = document.getElementById('serverSpeedSpan');
+const clientSpeedSpan = document.getElementById('clientSpeedSpan');
 
 let connectionIs = false;
 let myId;
@@ -40,6 +43,8 @@ let slowdownIs = false;
 
 let myPlane;
 
+let shiftKeyIs = false;
+
 document.addEventListener('keydown', (event) => {
   switch(event.code) {
     case 'KeyA' : toLeftIs = true; break;
@@ -56,6 +61,7 @@ document.addEventListener('keyup', (event) => {
     case 'KeyW' : accelerationIs = false; break;
     case 'KeyS' : slowdownIs = false; break;
   }
+  console.log('event.code', event.code);
 });
 
 /*****************
