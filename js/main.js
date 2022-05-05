@@ -19,7 +19,8 @@ const clientSpeedSpan = document.getElementById('clientSpeedSpan');
 let connectionIs = false;
 let myId;
 
-let updateTimeout = 20;
+let clientSocketTimeout = 20;
+let serverSocketTimeout = 0;
 
 /*****************
  *  CONTROLLERS
@@ -43,7 +44,8 @@ let slowdownIs = false;
 
 let myPlane;
 
-let shiftKeyIs = false;
+let shiftLeftIs = false;
+let shiftRightIs = false;
 
 document.addEventListener('keydown', (event) => {
   switch(event.code) {
@@ -51,6 +53,9 @@ document.addEventListener('keydown', (event) => {
     case 'KeyD' : toRightIs = true; break;
     case 'KeyW' : accelerationIs = true; break;
     case 'KeyS' : slowdownIs = true; break;
+
+    case 'ShiftLeft' : shiftLeftIs = true; break;
+    case 'ShiftRight' : shiftRightIs = true; break;
   }
 });
 
@@ -60,6 +65,15 @@ document.addEventListener('keyup', (event) => {
     case 'KeyD' : toRightIs = false; break;
     case 'KeyW' : accelerationIs = false; break;
     case 'KeyS' : slowdownIs = false; break;
+
+    case 'ShiftLeft' : shiftLeftIs = false; break;
+    case 'ShiftRight' : shiftRightIs = false; break;
+
+    case 'NumpadAdd' : setSocketSpeedSubtract(); break;
+    case 'Equal' : setSocketSpeedSubtract(); break;
+
+    case 'NumpadSubtract' : setSocketSpeedAdd(); break;
+    case 'Minus' : setSocketSpeedAdd(); break;
   }
   console.log('event.code', event.code);
 });
@@ -122,6 +136,9 @@ function animate() {
       clientsCounter.innerText = planesArr.length;
       directionSpan.innerHTML = myPlane.direction;
       speedSpan.innerHTML = Math.round(myPlane.speed * 50);
+
+      serverSpeedSpan.innerText = serverSocketTimeout;
+      clientSpeedSpan.innerText = clientSocketTimeout;
     }
   }
 
@@ -200,7 +217,8 @@ function getConnect(data) {
 }
 
 function getUpdate(data) {
-  planesArr = data;
+  planesArr = data.planesArr;
+  serverSocketTimeout = data.socketTimeout;
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
@@ -235,7 +253,7 @@ function sendUpdate() {
   myPlane = { id: myId, x: x, y: y, direction: direction, speed: speed }
   SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
 
-  setTimeout(sendUpdate, updateTimeout);
+  setTimeout(sendUpdate, clientSocketTimeout);
 }
 
 function getUnknownAction(action, data) {
@@ -243,4 +261,22 @@ function getUnknownAction(action, data) {
   console.log('action:', action);
   console.log(data);
   console.groupEnd();
+}
+
+//
+
+function setSocketSpeedSubtract() {
+  if (shiftLeftIs || shiftRightIs) {
+    SOCKET.send(JSON.stringify({ action: 'setSocketSpeed', data: -1 }));
+  } else {
+    if (clientSocketTimeout > 2) clientSocketTimeout--;
+  }
+}
+
+function setSocketSpeedAdd() {
+  if (shiftLeftIs || shiftRightIs) {
+    SOCKET.send(JSON.stringify({ action: 'setSocketSpeed', data: 1 }));
+  } else {
+    if (clientSocketTimeout < 1000) clientSocketTimeout++;
+  }
 }
