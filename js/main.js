@@ -1,6 +1,6 @@
 'use strict';
 
-const client_version = 'CV-000 [6-05-2022]';
+const client_version = 'CV-001 [6-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -17,8 +17,9 @@ const speedSpan = document.getElementById('speedSpan');
  *  CONTROLLERS
  */
 
-let testArr = [];
+//
 let maxDelay = 0;
+let lastTimeStamp = 0;
 
 let myId;
 let connectionIs = false;
@@ -131,7 +132,7 @@ function animate() {
 
   frame++;
 
-  if (frame % 6000 === 0) {
+  if (frame % 6000 == 0) {
     let time = Date.now();
     console.log((time - startAnimateTime) / 60);
     startAnimateTime = time;
@@ -214,17 +215,14 @@ function getConnect(data) {
 function getUpdate(data) {
 
   testArr.push(data.timeStamp);
-  if (testArr.length > 999) {
-    for (let i = 0; i < testArr.length; i++) {
-      if (i === testArr.length - 1) {
-        testArr = [testArr[testArr.length - 1]];
-      } else {
-        let result = testArr[i + 1] - testArr[i];
-        if (result > maxDelay) maxDelay = result;
-      }
-    }
-    console.log('max delay =', maxDelay);
+  if (lastTimeStamp) {
+    let result = data.timeStamp - lastTimeStamp;
+    if (result > maxDelay) {
+      maxDelay = result;
+      console.log('max delay =', maxDelay);
+    } 
   }
+  timeStamp = data.timeStamp;
 
   if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
   serverLoopTimeout = data.timeStamp;
