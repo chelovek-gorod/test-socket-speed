@@ -1,6 +1,6 @@
 'use strict';
 
-const client_version = 'CV-001 [6-05-2022]';
+const client_version = 'CV-002 [6-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -134,7 +134,7 @@ function animate() {
 
   if (frame % 6000 == 0) {
     let time = Date.now();
-    console.log((time - startAnimateTime) / 60);
+    console.log((time - startAnimateTime) / 100);
     startAnimateTime = time;
   }
 
