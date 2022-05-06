@@ -112,6 +112,7 @@ let frame = 0;
 const background = new Image();
 background.src = './src/images/map.jpg';
 
+let startAnimateTime = Date.now();
 function animate() {
   ctx.clearRect(0, 0, C_WIDTH, C_HEIGHT);
     
@@ -129,6 +130,13 @@ function animate() {
   }
 
   frame++;
+
+  if (frame % 60000 === 0) {
+    let time = Date.now();
+    console.log((time - startAnimateTime) / 60);
+    startAnimateTime = time;
+  }
+
   window.requestAnimationFrame(animate);
 }
 animate();
