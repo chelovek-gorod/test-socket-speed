@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const client_version = 'CV-004 [4-05-2022]';
 console.log('CLIENT', client_version);
@@ -13,14 +13,18 @@ const connectionId = document.getElementById('connectionId');
 const directionSpan = document.getElementById('directionSpan');
 const speedSpan = document.getElementById('speedSpan');
 
-let connectionIs = false;
-let myId;
-
-let updateTimeout = 20;
-
 /*****************
  *  CONTROLLERS
  */
+
+let connectionIs = false;
+
+const fps = 50; // frames per 1000ms
+const idealTimeout = 1000 / fps; // ms for 1 frame
+const updateTimeout = idealTimeout / 2;
+
+let serverSendTimeStamp = 0;
+let serverLoopTimeout = updateTimeout;
 
 const RAD = Math.PI / 180;
 
@@ -84,12 +88,13 @@ class Plane {
     this.y = C_HEIGHT + planeHalfHeight;
     this.direction = 270;
     this.speed = cruiseSpeed;
+    this.time = 0;
   }
 };
 let planesArr = [];
 
 function drawPlane (image, frame, plane) {
-  let {id, x, y, direction, speed } = plane;
+  let {id, x, y, direction } = plane;
   let frameY = (id != myId) ? planeHeight : 0;
   ctx.save();
   ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
@@ -155,6 +160,7 @@ function connection() {
         break;
       case 'plane' : getPlane(data); break;
       case 'update' : getUpdate(data); break;
+      case 'out' : console.log(`user with id ${data} out game`); break;
       default : getUnknownAction(action, data);
     }
   };
@@ -194,13 +200,16 @@ function getConnect(data) {
 }
 
 function getUpdate(data) {
-  planesArr = data;
+  if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
+  serverLoopTimeout = data.timeStamp;
+  planesArr = data.planesArr;
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
 }
 
 function sendUpdate() {
+
   let { x, y, direction, speed } = myPlane;
 
   let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
@@ -216,6 +225,8 @@ function sendUpdate() {
     if (speed > cruiseSpeed) speed = ((speed - accPass) > cruiseSpeed) ? (speed - accPass) : cruiseSpeed;
   }
 
+  speed = speed * serverLoopTimeout / serverLoopTimeout;
+
   let angle = RAD * direction;
   x += Math.cos(angle) * speed;
   y += Math.sin(angle) * speed;
@@ -226,7 +237,10 @@ function sendUpdate() {
   if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
   else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
 
-  myPlane = { id: myId, x: x, y: y, direction: direction, speed: speed }
+  myPlane.x = x;
+  myPlane.y = y;
+  myPlane.direction = direction;
+  myPlane.speed = speed;
   SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
 
   setTimeout(sendUpdate, updateTimeout);
