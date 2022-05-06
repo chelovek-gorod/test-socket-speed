@@ -17,6 +17,8 @@ const speedSpan = document.getElementById('speedSpan');
  *  CONTROLLERS
  */
 
+let testArr = [];
+
 let myId;
 let connectionIs = false;
 
@@ -201,9 +203,25 @@ function getConnect(data) {
 }
 
 function getUpdate(data) {
+
+  testArr.push(data.timeStamp);
+  if (testArr.length > 99) {
+    let resArr = [];
+    for (let i = 0; i < testArr.length; i++) {
+      if (i === testArr.length - 1) {
+        let time = testArr[testArr.length - 1];
+        testArr = [];
+        testArr.push(time);
+      } else {
+        resArr.push(testArr[i + 1] - testArr[i]);
+      }
+    }
+    console.log(resArr);
+  }
+
   if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
   serverLoopTimeout = data.timeStamp;
-  planesArr = data.planesArr; 
+  planesArr = data.planesArr;
 
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
