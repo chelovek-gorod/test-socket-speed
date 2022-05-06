@@ -18,6 +18,7 @@ const speedSpan = document.getElementById('speedSpan');
  */
 
 let testArr = [];
+let maxDelay = 0;
 
 let myId;
 let connectionIs = false;
@@ -205,18 +206,16 @@ function getConnect(data) {
 function getUpdate(data) {
 
   testArr.push(data.timeStamp);
-  if (testArr.length > 99) {
-    let resArr = [];
+  if (testArr.length > 999) {
     for (let i = 0; i < testArr.length; i++) {
       if (i === testArr.length - 1) {
-        let time = testArr[testArr.length - 1];
-        testArr = [];
-        testArr.push(time);
+        testArr = [testArr[testArr.length - 1]];
       } else {
-        resArr.push(testArr[i + 1] - testArr[i]);
+        let result = testArr[i + 1] - testArr[i];
+        if (result > maxDelay) maxDelay = result;
       }
     }
-    console.log(resArr);
+    console.log('max delay =', maxDelay);
   }
 
   if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
