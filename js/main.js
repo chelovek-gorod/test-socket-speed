@@ -203,7 +203,7 @@ function getConnect(data) {
 function getUpdate(data) {
   if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
   serverLoopTimeout = data.timeStamp;
-  planesArr = data.planesArr;
+  planesArr = data.planesArr; 
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
