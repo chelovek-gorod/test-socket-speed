@@ -1,6 +1,6 @@
 'use strict';
 
-const client_version = 'CV-001 [6-05-2022]';
+const client_version = 'CV-000 [6-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -221,7 +221,7 @@ function getUpdate(data) {
       console.log('max delay =', maxDelay);
     } 
   }
-  timeStamp = data.timeStamp;
+  lastTimeStamp = data.timeStamp;
 
   if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
   serverLoopTimeout = data.timeStamp;
