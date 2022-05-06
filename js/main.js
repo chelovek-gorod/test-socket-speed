@@ -131,7 +131,7 @@ function animate() {
 
   frame++;
 
-  if (frame % 60000 === 0) {
+  if (frame % 6000 === 0) {
     let time = Date.now();
     console.log((time - startAnimateTime) / 60);
     startAnimateTime = time;
