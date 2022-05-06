@@ -17,6 +17,7 @@ const speedSpan = document.getElementById('speedSpan');
  *  CONTROLLERS
  */
 
+let myId;
 let connectionIs = false;
 
 const fps = 50; // frames per 1000ms
