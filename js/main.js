@@ -1,6 +1,6 @@
 'use strict';
 
-const client_version = 'CV-002 [6-05-2022]';
+const client_version = 'CV-001 [6-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -214,7 +214,6 @@ function getConnect(data) {
 
 function getUpdate(data) {
 
-  testArr.push(data.timeStamp);
   if (lastTimeStamp) {
     let result = data.timeStamp - lastTimeStamp;
     if (result > maxDelay) {
