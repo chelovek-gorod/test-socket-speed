@@ -150,6 +150,8 @@ function animate() {
       directionSpan.innerHTML = myPlane.direction;
       speedSpan.innerHTML = Math.round(myPlane.speed * 50);
     }
+
+    if (frame % 1000 == 0) console.log(statArr);
   }
 
   frame++;
