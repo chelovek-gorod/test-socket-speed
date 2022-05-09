@@ -198,7 +198,7 @@ function getUpdate(data) {
   let serverTimeStamp = data.timeStamp;
   let clientTimeStamp = Date.now();
 
-  console.log("Server time stamp =", serverTimeStamp, "; client time stamp =", clientTimeStamp, "; def =", clientTimeStamp - serverTimeStamp);
+  console.log("Server time stamp =", serverTimeStamp, ";\nclient time stamp =", clientTimeStamp, ";\ndef =", clientTimeStamp - serverTimeStamp);
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
