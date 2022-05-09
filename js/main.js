@@ -184,7 +184,7 @@ function connection() {
 
 }
 connection();
-
+//  data: { planesArr: planesArr, timeStamp: Date.now() } 
 function getConnect(data) {
   myId = data;
   connectionId.innerText = data;
@@ -194,7 +194,11 @@ function getConnect(data) {
 }
 
 function getUpdate(data) {
-  planesArr = data;
+  planesArr = data.planesArr;
+  timeStamp = data.timeStamp;
+  let time = Date.now();
+
+  console.log("Server timeStamp =", timeStamp, "; my timeStamp =", time, "; def =", time - timeStamp);
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
