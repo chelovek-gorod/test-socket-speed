@@ -195,10 +195,10 @@ function getConnect(data) {
 
 function getUpdate(data) {
   planesArr = data.planesArr;
-  timeStamp = data.timeStamp;
-  let time = Date.now();
+  let serverTimeStamp = data.timeStamp;
+  let clientTimeStamp = Date.now();
 
-  console.log("Server timeStamp =", timeStamp, "; my timeStamp =", time, "; def =", time - timeStamp);
+  console.log("Server time stamp =", serverTimeStamp, "; client time stamp =", clientTimeStamp, "; def =", clientTimeStamp - serverTimeStamp);
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
