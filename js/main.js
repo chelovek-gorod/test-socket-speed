@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-004 [4-05-2022]';
+const client_version = 'CV-000 [9-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -16,7 +16,8 @@ const speedSpan = document.getElementById('speedSpan');
 let connectionIs = false;
 let myId;
 
-let updateTimeout = 20;
+let updateTimeout = 1000;
+let statArr = [];
 
 /*****************
  *  CONTROLLERS
@@ -27,7 +28,7 @@ const RAD = Math.PI / 180;
 // turns and turn speed
 let toLeftIs = false;
 let toRightIs = false;
-let turnSpeed = 1.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
+let turnSpeed = 1.0; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
 
 // speed and acceleration
 let minSpeed = 1;
@@ -89,14 +90,46 @@ class Plane {
 let planesArr = [];
 
 function drawPlane (image, frame, plane) {
-  let {id, x, y, direction, speed } = plane;
+  let { id, x, y, direction } = plane;
   let frameY = (id != myId) ? planeHeight : 0;
+  
   ctx.save();
   ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
   ctx.rotate(direction * RAD);
   ctx.translate(-(x + planeHalfWidth), -(y + planeHalfHeight));
   ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
   ctx.restore();
+
+  if (id === myId) updatePlane(plane);
+}
+
+function updatePlane(plane) {
+  let { x, y, direction, speed } = plane;
+
+  let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
+  if (turnAngle != 0) {
+    direction = (360 + direction + turnAngle) % 360;
+  }
+
+  if (accelerationIs != slowdownIs) {
+    if (accelerationIs) speed = (speed < maxSpeed) ? speed + accHard : maxSpeed;
+    if (slowdownIs) speed = (speed > minSpeed) ? speed - accHard : minSpeed;
+  } else if (speed != cruiseSpeed) {
+    if (speed < cruiseSpeed) speed = ((speed + accPass) < cruiseSpeed) ? (speed + accPass) : cruiseSpeed;
+    if (speed > cruiseSpeed) speed = ((speed - accPass) > cruiseSpeed) ? (speed - accPass) : cruiseSpeed;
+  }
+
+  let angle = RAD * direction;
+  x += Math.cos(angle) * speed;
+  y += Math.sin(angle) * speed;
+
+  if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
+  else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
+
+  if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
+  else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
+
+  myPlane = { id: myId, x: x, y: y, direction: direction, speed: speed };
 }
 
 let frame = 0;
@@ -153,7 +186,6 @@ function connection() {
         SOCKET = socket;
         getConnect(data);
         break;
-      case 'plane' : getPlane(data); break;
       case 'update' : getUpdate(data); break;
       default : getUnknownAction(action, data);
     }
@@ -184,10 +216,11 @@ function connection() {
 
 }
 connection();
-//  data: { planesArr: planesArr, timeStamp: Date.now() } 
+
 function getConnect(data) {
-  myId = data;
-  connectionId.innerText = data;
+  updateTimeout = data.updateTimeout;
+  myId = data.id;
+  connectionId.innerText = myId;
   myPlane = new Plane(myId);
   SOCKET.send(JSON.stringify({ action: 'plane', data: myPlane }));
   sendUpdate();
@@ -195,43 +228,20 @@ function getConnect(data) {
 
 function getUpdate(data) {
   planesArr = data.planesArr;
-  let sendCounter = data.sendCounter;
   let serverTimeStamp = data.timeStamp;
   let clientTimeStamp = Date.now();
 
-  console.log("sendCounter =", sendCounter, "Server =", serverTimeStamp, ";\nclient =", clientTimeStamp, ";\ndef CS =", clientTimeStamp - serverTimeStamp);
+  statArr.push({
+    serverTimeStamp : serverTimeStamp,
+    clientTimeStamp : clientTimeStamp,
+    serverClientTimeout : serverTimeStamp - clientTimeStamp
+  });
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
 }
 
 function sendUpdate() {
-  let { x, y, direction, speed } = myPlane;
-
-  let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
-  if (turnAngle != 0) {
-    direction = (360 + direction + turnAngle) % 360;
-  }
-
-  if (accelerationIs != slowdownIs) {
-    if (accelerationIs) speed = (speed < maxSpeed) ? speed + accHard : maxSpeed;
-    if (slowdownIs) speed = (speed > minSpeed) ? speed - accHard : minSpeed;
-  } else if (speed != cruiseSpeed) {
-    if (speed < cruiseSpeed) speed = ((speed + accPass) < cruiseSpeed) ? (speed + accPass) : cruiseSpeed;
-    if (speed > cruiseSpeed) speed = ((speed - accPass) > cruiseSpeed) ? (speed - accPass) : cruiseSpeed;
-  }
-
-  let angle = RAD * direction;
-  x += Math.cos(angle) * speed;
-  y += Math.sin(angle) * speed;
-
-  if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
-  else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
-
-  if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
-  else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
-
-  myPlane = { id: myId, x: x, y: y, direction: direction, speed: speed }
   SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
 
   setTimeout(sendUpdate, updateTimeout);
