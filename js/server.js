@@ -2,7 +2,6 @@
 
 const updateTimeout = 10; 
 let lastUpdateTimeStamp = updateTimeout;
-let lastUpdateDelay = 0;
 
 /*****************
  *  CLIENTS
@@ -30,6 +29,14 @@ var getId = countId();
 
 const RAD = Math.PI / 180;
 
+const C_WIDTH = 1200;
+const C_HEIGHT = 600;
+
+const planeWidth = 100;
+const planeHeight = 100;
+const planeHalfWidth = 50;
+const planeHalfHeight = 50;
+
 // speed and acceleration
 let minSpeed = 1;
 let cruiseSpeed = 4
@@ -51,38 +58,30 @@ class Plane {
   }
 
   update(delay) {
-    let { x, y, direction, speed } = myPlane;
-
-    let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
-    if (turnAngle != 0) {
-      direction = (360 + direction + turnAngle) % 360;
+    if (this.directionChanging != 0) {
+      direction = (360 + direction + this.directionChanging * turnSpeed) % 360;
     }
   
-    if (accelerationIs != slowdownIs) {
-      if (accelerationIs) speed = (speed < maxSpeed) ? speed + accHard : maxSpeed;
-      if (slowdownIs) speed = (speed > minSpeed) ? speed - accHard : minSpeed;
-    } else if (speed != cruiseSpeed) {
-      if (speed < cruiseSpeed) speed = ((speed + accPass) < cruiseSpeed) ? (speed + accPass) : cruiseSpeed;
-      if (speed > cruiseSpeed) speed = ((speed - accPass) > cruiseSpeed) ? (speed - accPass) : cruiseSpeed;
+    if (this.speedChanging != 0) {
+      if (this.speedChanging > 0) this.speed = (this.speed < maxSpeed) ? this.speed + accHard : maxSpeed;
+      else this.speed = (this.speed > minSpeed) ? this.speed - accHard : minSpeed;
+    } else if (this.speed != cruiseSpeed) {
+      if (this.speed < cruiseSpeed) this.speed = ((this.speed + accPass) < cruiseSpeed) ? (this.speed + accPass) : cruiseSpeed;
+      if (this.speed > cruiseSpeed) this.speed = ((this.speed - accPass) > cruiseSpeed) ? (this.speed - accPass) : cruiseSpeed;
     }
   
-    speed = speed * serverLoopTimeout / serverLoopTimeout;
+    let currentSpeed = this.speed * delay / updateTimeout;
   
-    let angle = RAD * direction;
-    x += Math.cos(angle) * speed;
-    y += Math.sin(angle) * speed;
+    let angle = RAD * this.direction;
+    this.x += Math.cos(angle) * currentSpeed;
+    this.y += Math.sin(angle) * currentSpeed;
   
-    if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
-    else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
+    if (this.x > (C_WIDTH + planeHalfWidth)) this.x -= C_WIDTH + planeWidth;
+    else if (this.x < -planeHalfWidth) this.x += C_WIDTH + planeWidth;
   
-    if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
-    else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
+    if (this.y > (C_HEIGHT + planeHalfHeight)) this.y -= C_HEIGHT + planeWidth;
+    else if (this.y < -planeHalfHeight) this.y += C_HEIGHT + planeWidth;
   
-    myPlane.x = x;
-    myPlane.y = y;
-    myPlane.direction = direction;
-    myPlane.speed = speed;
-    SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
   }
 };
 
@@ -161,7 +160,7 @@ function updateLoop() {
   let delay = (lastUpdateTimeStamp) ? timeStamp - lastUpdateTimeStamp : 0;
   lastUpdateTimeStamp = timeStamp;
 
-  .update(delay)
+  planesAr.forEach( plane => plane.update(delay));
 
   let message = JSON.stringify({
     action: 'update',
