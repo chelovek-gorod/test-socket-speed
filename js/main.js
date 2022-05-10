@@ -1,6 +1,6 @@
 'use strict';
 
-const client_version = 'CV-000 [6-05-2022]';
+const client_version = 'CV-001 [10-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -17,26 +17,20 @@ const speedSpan = document.getElementById('speedSpan');
  *  CONTROLLERS
  */
 
-//
-let maxDelay = 0;
-let lastTimeStamp = 0;
+let updateTimeout;
+
+let lastUpdateTimeStamp;
+let timeout;
 
 let myId;
 let connectionIs = false;
-
-const fps = 50; // frames per 1000ms
-const idealTimeout = 1000 / fps; // ms for 1 frame
-const updateTimeout = idealTimeout / 2;
-
-let serverSendTimeStamp = 0;
-let serverLoopTimeout = updateTimeout;
 
 const RAD = Math.PI / 180;
 
 // turns and turn speed
 let toLeftIs = false;
 let toRightIs = false;
-let turnSpeed = 1.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
+let turnSpeed = 1.0; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
 
 // speed and acceleration
 let minSpeed = 1;
@@ -171,7 +165,6 @@ function connection() {
         SOCKET = socket;
         getConnect(data);
         break;
-      case 'plane' : getPlane(data); break;
       case 'update' : getUpdate(data); break;
       case 'out' : console.log(`user with id ${data} out game`); break;
       default : getUnknownAction(action, data);
@@ -205,26 +198,22 @@ function connection() {
 connection();
 
 function getConnect(data) {
-  myId = data;
-  connectionId.innerText = data;
+  updateTimeout = data.updateTimeout;
+  myId = data.id;
+  connectionId.innerText = myId;
   myPlane = new Plane(myId);
   SOCKET.send(JSON.stringify({ action: 'plane', data: myPlane }));
-  sendUpdate();
+  //sendUpdate();
 }
 
 function getUpdate(data) {
+  let timeStamp = Date.now();
 
-  if (lastTimeStamp) {
-    let result = data.timeStamp - lastTimeStamp;
-    if (result > maxDelay) {
-      maxDelay = result;
-      console.log('max delay =', maxDelay);
-    } 
-  }
-  lastTimeStamp = data.timeStamp;
-
-  if (serverSendTimeStamp) serverLoopTimeout = data.timeStamp - serverSendTimeStamp;
-  serverLoopTimeout = data.timeStamp;
+  let serverDelay = data.delay;
+  planesArr = data.planesArr;
+  timeout += (lastUpdateTimeStamp) ? (timeStamp - lastUpdateTimeStamp) + serverDelay : updateTimeout;
+  lastUpdateTimeStamp = timeStamp;
+  
   planesArr = data.planesArr;
 
   if (planesArr.length > 0) connectionIs = true;
