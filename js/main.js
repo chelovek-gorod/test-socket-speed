@@ -133,7 +133,7 @@ function animate() {
       speedSpan.innerHTML = Math.round(myPlane.speed * 50);
     }
 
-    if (frame % 50 == 0) {
+    if (frame % 10 == 0) {
       myPlane = planesArr.find(plane => plane.id == myId);
 
       let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
