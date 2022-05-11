@@ -137,7 +137,7 @@ function animate() {
       myPlane = planesArr.find(plane => plane.id == myId);
 
       let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
-      if (turnAngle != 0) myPlane.direction = (360 + direction + turnAngle) % 360;
+      if (turnAngle != 0) myPlane.direction = (360 + myPlane.direction + turnAngle) % 360;
 
       if (accelerationIs != slowdownIs) {
         if (accelerationIs) myPlane.speed = (myPlane.speed < maxSpeed) ? myPlane.speed + accHard : maxSpeed;
