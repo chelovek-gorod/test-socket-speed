@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-011 [13-05-2022]';
+const client_version = 'CV-013 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -20,9 +20,6 @@ let myDirection = 0;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
-let timeout;
-
-let testArr = [];
 
 /*****************
  *  CONTROLLERS
@@ -87,8 +84,23 @@ const planeHalfHeight = 50;
 let planesArr = [];
 
 function drawPlane (image, frame, plane) {
-  let { id, x, y, direction } = plane;
+  let { id, x, y, direction, speed } = plane;
   let frameY = (id != myId) ? planeHeight : 0;
+
+  let timeStamp = Date.now();
+  let timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : 0;
+
+  let currentSpeed = speed * timeout / updateTimeout;
+
+  let angle = RAD * plane.direction;
+  x += Math.cos(angle) * currentSpeed;
+  y += Math.sin(angle) * currentSpeed;
+
+  if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
+  else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
+
+  if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
+  else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
   
   ctx.save();
   ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
@@ -99,7 +111,7 @@ function drawPlane (image, frame, plane) {
 
   if (id === myId) {
     myDirection = direction;
-    mySpeed = plane.speed;
+    mySpeed = speed;
   }
 }
 
@@ -196,29 +208,9 @@ function getConnect(data) {
   setInterval(sendUpdate, updateTimeout * 2);
 }
 
-function updatePlane(plane, timeout) {
-  let currentSpeed = plane.speed * timeout / updateTimeout;
-
-  let angle = RAD * plane.direction;
-  plane.x += Math.cos(angle) * currentSpeed;
-  plane.y += Math.sin(angle) * currentSpeed;
-
-  if (plane.x > (C_WIDTH + planeHalfWidth)) plane.x -= C_WIDTH + planeWidth;
-  else if (plane.x < -planeHalfWidth) plane.x += C_WIDTH + planeWidth;
-
-  if (plane.y > (C_HEIGHT + planeHalfHeight)) plane.y -= C_HEIGHT + planeWidth;
-  else if (plane.y < -planeHalfHeight) plane.y += C_HEIGHT + planeWidth;
-}
-
 function getUpdate(data) {
   planesArr = data.planesArr;
-  let timeStamp = Date.now();
-  timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : data.timeout;
-  lastUpdateTimeStamp = timeStamp;
-  
-  planesArr.forEach(plane => updatePlane(plane, timeout));
-  testArr.push({ timeout : timeout, planesArr : planesArr });
-  if(testArr.length % 1000 === 0) console.log(testArr);
+  lastUpdateTimeStamp = Date.now();
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
