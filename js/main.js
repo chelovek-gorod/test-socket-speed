@@ -119,11 +119,11 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x + 50;
-    this.y = y + 50;
+    this.x = x;
+    this.y = y;
     this.frame = 0;
     this.counter = 0;
-    this.nextFrameCount = 30;
+    this.nextFrameCount = 12;
   }
 
   draw() {
