@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-018 [13-05-2022]';
+const client_version = 'CV-019 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -113,7 +113,7 @@ smokeImage.src = './src/images/smoke.png';
 
 const smokeWidth = 50;
 const smokeHeight = 50;
-const smokeMaxFrame = smokeWidth * 10;
+const smokeMaxFrame = smokeWidth * 20;
 
 let smokeArr = [];
 
@@ -121,9 +121,9 @@ class Smoke {
   constructor(x, y) {
     this.x = x + 25;
     this.y = y + 25;
-    this.frame = 0;
+    this.frameX = 0;
     this.counter = 0;
-    this.nextFrameCount = 12;
+    this.nextFrameCount = 3;
   }
 
   draw() {
