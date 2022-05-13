@@ -109,14 +109,14 @@ class Cloud {
 };
 
 setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, -1, C_WIDTH + cloudWidth, -90)), 600);
-setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, 0, C_WIDTH + cloudWidth, 90)), 1800);
-setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, +1, C_WIDTH + cloudWidth, 250)), 3000);
-setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, -1, C_WIDTH + cloudWidth, 430)), 4000);
+setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, 0, C_WIDTH + cloudWidth, 90)), 2400);
+setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, +1, C_WIDTH + cloudWidth, 250)), 4800);
+setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, -1, C_WIDTH + cloudWidth, 430)), 7200);
 
-setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, +1, C_WIDTH + cloudWidth, -180)), 1200);
-setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, 0, C_WIDTH + cloudWidth, 20)), 2400);
-setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, 0, C_WIDTH + cloudWidth, 300)), 3600);
-setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, -1, C_WIDTH + cloudWidth, 550)), 4600);
+setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, +1, C_WIDTH + cloudWidth, -180)), 1800);
+setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, 0, C_WIDTH + cloudWidth, 20)), 3600);
+setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, 0, C_WIDTH + cloudWidth, 300)), 6000);
+setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, -1, C_WIDTH + cloudWidth, 550)), 8400);
 
 function drawPlane (image, frame, plane) {
   let { id, x, y, direction, speed } = plane;
