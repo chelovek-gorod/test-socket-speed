@@ -1,7 +1,7 @@
 'use strict';
 
 const updateTimeout = 10; 
-let lastUpdateTimeStamp = updateTimeout;
+let lastUpdateTimeStamp;
 
 /*****************
  *  CLIENTS
@@ -57,7 +57,7 @@ class Plane {
     this.speedChanging = 0; // -1; 0; +1
   }
 
-  update(delay) {
+  update(timeout) {
     if (this.directionChanging != 0) {
       direction = (360 + direction + this.directionChanging * turnSpeed) % 360;
     }
@@ -70,7 +70,7 @@ class Plane {
       if (this.speed > cruiseSpeed) this.speed = ((this.speed - accPass) > cruiseSpeed) ? (this.speed - accPass) : cruiseSpeed;
     }
   
-    let currentSpeed = this.speed * delay / updateTimeout;
+    let currentSpeed = this.speed * timeout / updateTimeout;
   
     let angle = RAD * this.direction;
     this.x += Math.cos(angle) * currentSpeed;
@@ -92,7 +92,7 @@ let planesArr = [];
  */
 
 const WebSocket = require('ws');
-const lastUpdateDate = 'SV-001 [10-05-2022]';
+const lastUpdateDate = 'SV-000 [13-05-2022]';
 
 const usedPort = process.env.PORT || 6789;
 const socketServer = new WebSocket.Server({ port: usedPort });
@@ -106,7 +106,6 @@ function onConnect(clientSocket) {
     let { action, data } = JSON.parse(message);
     switch (action) {
       case 'connect' : getConnect(clientSocket); break;
-      case 'plane' : getPlane(data); break;
       case 'update' : getUpdate(data); break;
       default : getUnknownAction(action, data);
     }
@@ -135,44 +134,39 @@ function getConnect(clientSocket) {
   let client = new Client(id, clientSocket);
   clientsArr.push(client);
 
+  let plane = new Plane(id);
+  planesArr.push(plane);
+
   let data = {
     id : id,
-    updateTimeout : updateTimeout
+    updateTimeout : updateTimeout,
+    planesArr : planesArr
   }
 
   clientSocket.send(JSON.stringify({ action: 'connect', data: data }));
 }
 
-function getPlane(data) {
-  planesArr.push(data);
-}
-
 function getUpdate(data) {
   let targetPlane = planesArr.find(plane => plane.id == data.id);
-  targetPlane.x = data.x;
-  targetPlane.y = data.y;
-  targetPlane.direction = data.direction;
-  targetPlane.speed = data.speed;
+  targetPlane.directionChanging = data.directionChanging; // -1; 0; +1
+  targetPlane.speedChanging = data.speedChanging; // -1; 0; +1
 }
 
 function updateLoop() {
   let timeStamp = Date.now();
-  let delay = (lastUpdateTimeStamp) ? timeStamp - lastUpdateTimeStamp : 0;
+  let timeout = (lastUpdateTimeStamp) ? timeStamp - lastUpdateTimeStamp : 10;
   lastUpdateTimeStamp = timeStamp;
 
-  planesAr.forEach( plane => plane.update(delay));
+  planesArr.forEach( plane => plane.update(timeout));
 
   let message = JSON.stringify({
     action: 'update',
     data: {
       planesArr: planesArr,
-      delay: delay
+      timeout: timeout
     } });
   clientsArr.forEach( client => client.socket.send(message) );
-
-  //setTimeout(updateLoop, updateTimeout);
 }
-//updateLoop();
 setInterval(updateLoop, updateTimeout);
 
 function getUnknownAction(action, data) {
