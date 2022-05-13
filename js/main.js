@@ -131,11 +131,11 @@ function drawPlane (image, frame, plane) {
   x += Math.cos(angle) * currentSpeed;
   y += Math.sin(angle) * currentSpeed;
 
-  if (x > (C_WIDTH + planeHalfWidth)) x -= C_WIDTH + planeWidth;
-  else if (x < -planeHalfWidth) x += C_WIDTH + planeWidth;
+  if (x > (C_WIDTH + planeWidth)) x -= C_WIDTH + planeWidth;
+  else if (x < -planeWidth) x += C_WIDTH + planeWidth;
 
-  if (y > (C_HEIGHT + planeHalfHeight)) y -= C_HEIGHT + planeWidth;
-  else if (y < -planeHalfHeight) y += C_HEIGHT + planeWidth;
+  if (y > (C_HEIGHT + planeHeight)) y -= C_HEIGHT + planeWidth;
+  else if (y < -planeHeight) y += C_HEIGHT + planeWidth;
   
   ctx.save();
   ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
