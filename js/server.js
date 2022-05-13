@@ -1,5 +1,8 @@
 'use strict';
 
+const lastUpdateDate = 'SV-003 [13-05-2022]';
+console.log(`last update date is ${lastUpdateDate}`);
+
 const updateTimeout = 10; 
 let lastUpdateTimeStamp;
 
@@ -59,7 +62,7 @@ class Plane {
 
   update(timeout) {
     if (this.directionChanging != 0) {
-      direction = (360 + direction + this.directionChanging * turnSpeed) % 360;
+      this.direction = (360 + this.direction + this.directionChanging * turnSpeed) % 360;
     }
   
     if (this.speedChanging != 0) {
@@ -92,7 +95,6 @@ let planesArr = [];
  */
 
 const WebSocket = require('ws');
-const lastUpdateDate = 'SV-002 [13-05-2022]';
 
 const usedPort = process.env.PORT || 6789;
 const socketServer = new WebSocket.Server({ port: usedPort });
@@ -126,7 +128,6 @@ function onConnect(clientSocket) {
 }
 // SERVER START CONSOLE INFO
 console.log(`server start on port ${usedPort}`);
-console.log(`last update date is ${lastUpdateDate}`);
 
 function getConnect(clientSocket) {
   let id = getId();

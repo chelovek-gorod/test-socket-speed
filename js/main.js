@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-002 [13-05-2022]';
+const client_version = 'CV-003 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -15,6 +15,8 @@ const speedSpan = document.getElementById('speedSpan');
 
 let connectionIs = false;
 let myId;
+let mySpeed = 0;
+let myDirection = 0;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
@@ -93,6 +95,11 @@ function drawPlane (image, frame, plane) {
   ctx.translate(-(x + planeHalfWidth), -(y + planeHalfHeight));
   ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
   ctx.restore();
+
+  if (id === myId) {
+    myDirection = direction;
+    mySpeed = plane.speed;
+  }
 }
 
 let frame = 0;
@@ -110,8 +117,8 @@ function animate() {
 
     if (frame % 12 == 0) {
       clientsCounter.innerText = planesArr.length;
-      directionSpan.innerHTML = myPlane.direction;
-      speedSpan.innerHTML = Math.round(myPlane.speed * 50);
+      directionSpan.innerHTML = myDirection;
+      speedSpan.innerHTML = Math.round(mySpeed * 50);
     }
   }
 
@@ -190,7 +197,7 @@ function getConnect(data) {
 
 function updatePlane(plane, timeout) {
   if (plane.directionChanging != 0) {
-    direction = (360 + direction + plane.directionChanging * turnSpeed) % 360;
+    plane.direction = (360 + plane.direction + plane.directionChanging * turnSpeed) % 360;
   }
 
   if (plane.speedChanging != 0) {
