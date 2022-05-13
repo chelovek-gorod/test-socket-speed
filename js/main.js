@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-006 [13-05-2022]';
+const client_version = 'CV-007 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -192,7 +192,7 @@ function getConnect(data) {
   updateTimeout = data.updateTimeout;
   myId = data.id;
   connectionId.innerText = myId;
-  setInterval(sendUpdate, updateTimeout);
+  setInterval(sendUpdate, updateTimeout * 2);
 }
 
 function updatePlane(plane, timeout) {
