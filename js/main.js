@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-001 [11-05-2022]';
+const client_version = 'CV-011 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -15,9 +15,14 @@ const speedSpan = document.getElementById('speedSpan');
 
 let connectionIs = false;
 let myId;
+let mySpeed = 0;
+let myDirection = 0;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
+let timeout;
+
+let testArr = [];
 
 /*****************
  *  CONTROLLERS
@@ -28,14 +33,15 @@ const RAD = Math.PI / 180;
 // turns and turn speed
 let toLeftIs = false;
 let toRightIs = false;
-let turnSpeed = 1.0; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
+let turnSpeed = 0.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
 
 // speed and acceleration
+let speedCountK = 100;
 let minSpeed = 1;
-let cruiseSpeed = 4
-let maxSpeed = 9;
-let accPass = 0.02;
-let accHard = 0.05;
+let cruiseSpeed = 2;
+let maxSpeed = 4;
+let accPass = 0.01;
+let accHard = 0.02;
 let accelerationIs = false;
 let slowdownIs = false;
 
@@ -78,15 +84,6 @@ const planeHeight = 100;
 const planeHalfWidth = 50;
 const planeHalfHeight = 50;
 
-class Plane {
-  constructor(id) {
-    this.id = id;
-    this.x = (C_WIDTH / 2) - planeHalfWidth;
-    this.y = C_HEIGHT + planeHalfHeight;
-    this.direction = 270;
-    this.speed = cruiseSpeed;
-  }
-};
 let planesArr = [];
 
 function drawPlane (image, frame, plane) {
@@ -99,19 +96,11 @@ function drawPlane (image, frame, plane) {
   ctx.translate(-(x + planeHalfWidth), -(y + planeHalfHeight));
   ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
   ctx.restore();
-}
 
-function updatePlane(plane, timeout) {
-  let angle = RAD * plane.direction;
-  let currentSpeed = plane.speed * timeout / 20;
-  plane.x += Math.cos(angle) * currentSpeed;
-  plane.y += Math.sin(angle) * currentSpeed;
-
-  if (plane.x > (C_WIDTH + planeHalfWidth)) plane.x -= C_WIDTH + planeWidth;
-  else if (plane.x < -planeHalfWidth) plane.x += C_WIDTH + planeWidth;
-
-  if (plane.y > (C_HEIGHT + planeHalfHeight)) plane.y -= C_HEIGHT + planeWidth;
-  else if (plane.y < -planeHalfHeight) plane.y += C_HEIGHT + planeWidth;
+  if (id === myId) {
+    myDirection = direction;
+    mySpeed = plane.speed;
+  }
 }
 
 let frame = 0;
@@ -129,25 +118,8 @@ function animate() {
 
     if (frame % 12 == 0) {
       clientsCounter.innerText = planesArr.length;
-      directionSpan.innerHTML = myPlane.direction;
-      speedSpan.innerHTML = Math.round(myPlane.speed * 50);
-    }
-
-    if (frame % 10 == 0) {
-      myPlane = planesArr.find(plane => plane.id == myId);
-
-      let turnAngle = (toLeftIs != toRightIs) ? (toLeftIs ? -turnSpeed : turnSpeed) : 0;
-      if (turnAngle != 0) myPlane.direction = (360 + myPlane.direction + turnAngle) % 360;
-
-      if (accelerationIs != slowdownIs) {
-        if (accelerationIs) myPlane.speed = (myPlane.speed < maxSpeed) ? myPlane.speed + accHard : maxSpeed;
-        if (slowdownIs) myPlane.speed = (myPlane.speed > minSpeed) ? myPlane.speed - accHard : minSpeed;
-      } else if (myPlane.speed != cruiseSpeed) {
-        if (myPlane.speed < cruiseSpeed) myPlane.speed = ((myPlane.speed + accPass) < cruiseSpeed) ? (myPlane.speed + accPass) : cruiseSpeed;
-        if (myPlane.speed > cruiseSpeed) myPlane.speed = ((myPlane.speed - accPass) > cruiseSpeed) ? (myPlane.speed - accPass) : cruiseSpeed;
-      }
-
-      SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
+      directionSpan.innerHTML = myDirection;
+      speedSpan.innerHTML = Math.round(mySpeed * speedCountK);
     }
   }
 
@@ -165,7 +137,7 @@ animate();
 // 'ws://localhost:6789'
 // 'ws://192.168.100.51:6789'
 // 'ws://192.168.0.122:6789'
-const socketURL = 'wss://mars-server-euro.herokuapp.com';
+const socketURL = 'ws://192.168.100.51:6789';
 let SOCKET;
 
 function connection() {
@@ -217,30 +189,48 @@ function connection() {
 connection();
 
 function getConnect(data) {
+  planesArr = data.planesArr;
   updateTimeout = data.updateTimeout;
   myId = data.id;
   connectionId.innerText = myId;
-  myPlane = new Plane(myId);
-  SOCKET.send(JSON.stringify({ action: 'plane', data: myPlane }));
-  sendUpdate();
+  setInterval(sendUpdate, updateTimeout * 2);
+}
+
+function updatePlane(plane, timeout) {
+  let currentSpeed = plane.speed * timeout / updateTimeout;
+
+  let angle = RAD * plane.direction;
+  plane.x += Math.cos(angle) * currentSpeed;
+  plane.y += Math.sin(angle) * currentSpeed;
+
+  if (plane.x > (C_WIDTH + planeHalfWidth)) plane.x -= C_WIDTH + planeWidth;
+  else if (plane.x < -planeHalfWidth) plane.x += C_WIDTH + planeWidth;
+
+  if (plane.y > (C_HEIGHT + planeHalfHeight)) plane.y -= C_HEIGHT + planeWidth;
+  else if (plane.y < -planeHalfHeight) plane.y += C_HEIGHT + planeWidth;
 }
 
 function getUpdate(data) {
   planesArr = data.planesArr;
   let timeStamp = Date.now();
-  let timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : data.timeout;
+  timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : data.timeout;
   lastUpdateTimeStamp = timeStamp;
   
   planesArr.forEach(plane => updatePlane(plane, timeout));
+  testArr.push({ timeout : timeout, planesArr : planesArr });
+  if(testArr.length % 1000 === 0) console.log(testArr);
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
 }
 
 function sendUpdate() {
-  SOCKET.send(JSON.stringify({ action: 'update', data: myPlane }));
+  let directionChanging = (toLeftIs != toRightIs) ? (toLeftIs ? -1 : 1) : 0;
+  let speedChanging = (accelerationIs != slowdownIs) ? (slowdownIs ? -1 : 1) : 0;
 
-  setTimeout(sendUpdate, updateTimeout);
+  if (directionChanging !== 0 || speedChanging !== 0) {
+    SOCKET.send(JSON.stringify({ action: 'update', data: { id : myId, directionChanging : directionChanging, speedChanging : speedChanging } }));
+  }
 }
 
 function getUnknownAction(action, data) {
