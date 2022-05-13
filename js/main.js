@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-017 [13-05-2022]';
+const client_version = 'CV-018 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -119,11 +119,11 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    this.x = x + 25;
+    this.y = y + 25;
     this.frame = 0;
     this.counter = 0;
-    this.nextFrameCount = 6;
+    this.nextFrameCount = 12;
   }
 
   draw() {
