@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-014 [13-05-2022]';
+const client_version = 'CV-015 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -83,6 +83,41 @@ const planeHalfHeight = 50;
 
 let planesArr = [];
 
+const cloudImage = new Image();
+cloudImage.src = './src/images/clouds.png';
+
+const cloudWidth = 500;
+const cloudHeight = 280;
+
+let heighCloudsArr = [];
+let lowCloudsArr = [];
+
+class Cloud {
+  constructor(frameX, frameY, speed, x, y) {
+    this.frameX = frameX * cloudWidth;
+    this.frameY = frameY * cloudHeight;
+    this.speed = 3 + speed;
+    this.x = x;
+    this.y = y;
+  }
+
+  draw() {
+    ctx.drawImage(cloudImage, this.frameX, this.frameY, cloudWidth, cloudHeight, this.x, this.y, cloudWidth, cloudHeight);
+    this.x -= this.speed;
+    if (this.x < -cloudWidth) this.x = C_WIDTH + cloudWidth;
+  }
+};
+
+setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, -1, C_WIDTH + cloudWidth, 120)), 1000);
+setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, 0, C_WIDTH + cloudWidth, 400)), 3000);
+setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, +1, C_WIDTH + cloudWidth, 200)), 5000);
+setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, -1, C_WIDTH + cloudWidth, 480)), 7000);
+
+setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, +1, C_WIDTH + cloudWidth, 200)), 2000);
+setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, 0, C_WIDTH + cloudWidth, 280)), 4000);
+setTimeout(() => heighCloudsArr.push(new Cloud(0, 0, 0, C_WIDTH + cloudWidth, 320)), 6000);
+setTimeout(() => heighCloudsArr.push(new Cloud(1, 0, -1, C_WIDTH + cloudWidth, 400)), 8000);
+
 function drawPlane (image, frame, plane) {
   let { id, x, y, direction, speed } = plane;
   let frameY = (id != myId) ? planeHeight : 0;
@@ -125,8 +160,12 @@ function animate() {
   if (connectionIs) {
     ctx.drawImage(background,0,0);
 
+    lowCloudsArr.forEach( cloud => cloud.draw() );
+
     let planeFrame = (frame % planeFrames) * planeWidth;
     planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
+
+    heighCloudsArr.forEach( cloud => cloud.draw() );
 
     if (frame % 12 == 0) {
       clientsCounter.innerText = planesArr.length;
