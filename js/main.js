@@ -192,7 +192,7 @@ function getConnect(data) {
   updateTimeout = data.updateTimeout;
   myId = data.id;
   connectionId.innerText = myId;
-  setInterval(sendUpdate, updateTimeout * 2);
+  setInterval(sendUpdate, updateTimeout);
 }
 
 function updatePlane(plane, timeout) {
