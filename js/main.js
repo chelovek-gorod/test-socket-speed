@@ -215,7 +215,7 @@ function updatePlane(plane, timeout) {
 }
 
 function getUpdate(data) {
-  planesArr = data.planesArr; console.log(planesArr);
+  planesArr = data.planesArr;
   let timeStamp = Date.now();
   timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : data.timeout;
   lastUpdateTimeStamp = timeStamp;
