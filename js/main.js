@@ -88,7 +88,7 @@ function drawPlane (image, frame, plane) {
   let frameY = (id != myId) ? planeHeight : 0;
 
   let timeStamp = Date.now();
-  let timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : 0;
+  let timeout = (lastUpdateTimeStamp) ? (timeStamp - lastUpdateTimeStamp) : 0;
 
   let currentSpeed = speed * timeout / updateTimeout;
 
@@ -210,7 +210,7 @@ function getConnect(data) {
 
 function getUpdate(data) {
   planesArr = data.planesArr;
-  lastUpdateTimeStamp = Date.now();
+  lastUpdateTimeStamp = Date.now(); // + data.timeout;
   
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
