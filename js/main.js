@@ -123,7 +123,7 @@ class Smoke {
     this.y = y;
     this.frame = 0;
     this.counter = 0;
-    this.nextFrameCount = 6;
+    this.nextFrameCount = 12;
   }
 
   draw() {
@@ -177,7 +177,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 5 === 0) smokeArr.push(new Smoke(x, y,));
+  if (frame % 12 === 0) smokeArr.push(new Smoke(x, y,));
 }
 
 let frame = 0;
