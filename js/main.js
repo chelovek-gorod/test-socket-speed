@@ -119,14 +119,20 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x - 50;
-    this.y = y - 50;
+    this.x = x + 50;
+    this.y = y + 50;
     this.frame = 0;
+    this.counter = 0;
+    this.nextFrameCount = 30;
   }
 
   draw() {
     ctx.drawImage(smokeImage, this.frame, 0, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    this.frame += smokeWidth;
+    this.counter++;
+    if (this.counter === this.nextFrameCount) {
+      this.counter = 0;
+      this.frame += smokeWidth;
+    }
   }
 };
 
