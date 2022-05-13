@@ -1,6 +1,6 @@
 'use strict';
 
-const lastUpdateDate = 'SV-008 [13-05-2022]';
+const lastUpdateDate = 'SV-009 [13-05-2022]';
 console.log(`last update date is ${lastUpdateDate}`);
 
 const updateTimeout = 5; 
@@ -55,12 +55,14 @@ class Plane {
     this.y = C_HEIGHT + planeHalfHeight;
     this.direction = 270;
     this.speed = cruiseSpeed;
-
-    this.directionChanging = 0; // -1; 0; +1
-    this.speedChanging = 0; // -1; 0; +1
   }
 
   update(timeout) {
+    if (this.speed != cruiseSpeed) {
+      if (this.speed < cruiseSpeed) this.speed = ((this.speed + accPass) < cruiseSpeed) ? (this.speed + accPass) : cruiseSpeed;
+      if (this.speed > cruiseSpeed) this.speed = ((this.speed - accPass) > cruiseSpeed) ? (this.speed - accPass) : cruiseSpeed;
+    }
+
     let currentSpeed = this.speed * timeout / updateTimeout;
   
     let angle = RAD * this.direction;
@@ -144,9 +146,6 @@ function getUpdate(data) {
   if (data.speedChanging != 0) {
     if (data.speedChanging > 0) targetPlane.speed = (targetPlane.speed < maxSpeed) ? targetPlane.speed + accHard : maxSpeed;
     else targetPlane.speed = (targetPlane.speed > minSpeed) ? targetPlane.speed - accHard : minSpeed;
-  } else if (targetPlane.speed != cruiseSpeed) {
-    if (targetPlane.speed < cruiseSpeed) targetPlane.speed = ((targetPlane.speed + accPass) < cruiseSpeed) ? (targetPlane.speed + accPass) : cruiseSpeed;
-    if (targetPlane.speed > cruiseSpeed) targetPlane.speed = ((targetPlane.speed - accPass) > cruiseSpeed) ? (targetPlane.speed - accPass) : cruiseSpeed;
   }
 }
 
