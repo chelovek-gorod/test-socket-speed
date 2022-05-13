@@ -123,7 +123,7 @@ class Smoke {
     this.y = y;
     this.frame = 0;
     this.counter = 0;
-    this.nextFrameCount = 12;
+    this.nextFrameCount = 6;
   }
 
   draw() {
