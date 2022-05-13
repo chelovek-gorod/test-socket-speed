@@ -108,6 +108,28 @@ class Cloud {
   }
 };
 
+const smokeImage = new Image();
+smokeImage.src = './src/images/smoke.png';
+
+const smokeWidth = 100;
+const smokeHeight = 100;
+const smokeMaxFrame = smokeWidth * 10;
+
+let smokeArr = [];
+
+class Smoke {
+  constructor(x, y) {
+    this.x = x - 50;
+    this.y = y - 50;
+    this.frame = 0;
+  }
+
+  draw() {
+    ctx.drawImage(smokeImage, this.frame, 0, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
+    this.frame += smokeWidth;
+  }
+};
+
 setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, -1, C_WIDTH + cloudWidth, -90)), 600);
 setTimeout(() => lowCloudsArr.push(new Cloud(1, 1, 0, C_WIDTH + cloudWidth, 90)), 2400);
 setTimeout(() => lowCloudsArr.push(new Cloud(0, 1, +1, C_WIDTH + cloudWidth, 250)), 4800);
@@ -148,6 +170,8 @@ function drawPlane (image, frame, plane) {
     myDirection = direction;
     mySpeed = speed;
   }
+
+  if (frame % 5 === 0) smokeArr.push(new Smoke(x, y,));
 }
 
 let frame = 0;
@@ -161,6 +185,9 @@ function animate() {
     ctx.drawImage(background,0,0);
 
     lowCloudsArr.forEach( cloud => cloud.draw() );
+
+    smokeArr.forEach( smoke => smoke.draw() );
+    smokeArr = smokeArr.filter(item => item.frame < smokeMaxFrame);
 
     let planeFrame = (frame % planeFrames) * planeWidth;
     planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
