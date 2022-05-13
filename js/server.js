@@ -92,7 +92,7 @@ let planesArr = [];
  */
 
 const WebSocket = require('ws');
-const lastUpdateDate = 'SV-000 [13-05-2022]';
+const lastUpdateDate = 'SV-002 [13-05-2022]';
 
 const usedPort = process.env.PORT || 6789;
 const socketServer = new WebSocket.Server({ port: usedPort });

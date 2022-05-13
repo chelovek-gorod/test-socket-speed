@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-001 [13-05-2022]';
+const client_version = 'CV-002 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -188,13 +188,39 @@ function getConnect(data) {
   setInterval(sendUpdate, updateTimeout);
 }
 
+function updatePlane(plane, timeout) {
+  if (plane.directionChanging != 0) {
+    direction = (360 + direction + plane.directionChanging * turnSpeed) % 360;
+  }
+
+  if (plane.speedChanging != 0) {
+    if (plane.speedChanging > 0) plane.speed = (plane.speed < maxSpeed) ? plane.speed + accHard : maxSpeed;
+    else plane.speed = (plane.speed > minSpeed) ? plane.speed - accHard : minSpeed;
+  } else if (plane.speed != cruiseSpeed) {
+    if (plane.speed < cruiseSpeed) plane.speed = ((plane.speed + accPass) < cruiseSpeed) ? (plane.speed + accPass) : cruiseSpeed;
+    if (plane.speed > cruiseSpeed) plane.speed = ((plane.speed - accPass) > cruiseSpeed) ? (plane.speed - accPass) : cruiseSpeed;
+  }
+
+  let currentSpeed = plane.speed * timeout / updateTimeout;
+
+  let angle = RAD * plane.direction;
+  plane.x += Math.cos(angle) * currentSpeed;
+  plane.y += Math.sin(angle) * currentSpeed;
+
+  if (plane.x > (C_WIDTH + planeHalfWidth)) plane.x -= C_WIDTH + planeWidth;
+  else if (plane.x < -planeHalfWidth) plane.x += C_WIDTH + planeWidth;
+
+  if (plane.y > (C_HEIGHT + planeHalfHeight)) plane.y -= C_HEIGHT + planeWidth;
+  else if (plane.y < -planeHalfHeight) plane.y += C_HEIGHT + planeWidth;
+}
+
 function getUpdate(data) {
   planesArr = data.planesArr; console.log(planesArr);
   let timeStamp = Date.now();
   timeout = (lastUpdateTimeStamp) ? data.timeout + (timeStamp - lastUpdateTimeStamp) : data.timeout;
   lastUpdateTimeStamp = timeStamp;
   
-  planesArr.forEach(plane => plane.update(timeout));
+  planesArr.forEach(plane => updatePlane(plane, timeout));
   testArr.push({ timeout : timeout, planesArr : planesArr });
   if(testArr.length % 10000 === 0) console.log(testArr);
   
