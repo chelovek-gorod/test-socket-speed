@@ -1,16 +1,16 @@
 'use strict';
 
-const lastUpdateDate = 'SV-005 [13-05-2022]';
+const lastUpdateDate = 'SV-008 [13-05-2022]';
 console.log(`last update date is ${lastUpdateDate}`);
 
-const updateTimeout = 10; 
+const updateTimeout = 5; 
 let lastUpdateTimeStamp;
 
 /*****************
  *  CLIENTS
  */
 
- class Client {
+class Client {
   constructor(id, socket) {
     this.id = id;
     this.socket = socket;
@@ -42,11 +42,11 @@ const planeHalfHeight = 50;
 
 // speed and acceleration
 let minSpeed = 1;
-let cruiseSpeed = 4
-let maxSpeed = 9;
-let accPass = 0.02;
-let accHard = 0.05;
-let turnSpeed = 1.0; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
+let cruiseSpeed = 2;
+let maxSpeed = 4;
+let accPass = 0.01;
+let accHard = 0.02;
+let turnSpeed = 0.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
 
 class Plane {
   constructor(id) {
@@ -61,18 +61,6 @@ class Plane {
   }
 
   update(timeout) {
-    if (this.directionChanging != 0) {
-      this.direction = (360 + this.direction + this.directionChanging * turnSpeed) % 360;
-    }
-  
-    if (this.speedChanging != 0) {
-      if (this.speedChanging > 0) this.speed = (this.speed < maxSpeed) ? this.speed + accHard : maxSpeed;
-      else this.speed = (this.speed > minSpeed) ? this.speed - accHard : minSpeed;
-    } else if (this.speed != cruiseSpeed) {
-      if (this.speed < cruiseSpeed) this.speed = ((this.speed + accPass) < cruiseSpeed) ? (this.speed + accPass) : cruiseSpeed;
-      if (this.speed > cruiseSpeed) this.speed = ((this.speed - accPass) > cruiseSpeed) ? (this.speed - accPass) : cruiseSpeed;
-    }
-  
     let currentSpeed = this.speed * timeout / updateTimeout;
   
     let angle = RAD * this.direction;
@@ -84,7 +72,6 @@ class Plane {
   
     if (this.y > (C_HEIGHT + planeHalfHeight)) this.y -= C_HEIGHT + planeWidth;
     else if (this.y < -planeHalfHeight) this.y += C_HEIGHT + planeWidth;
-  
   }
 };
 
@@ -149,8 +136,18 @@ function getConnect(clientSocket) {
 
 function getUpdate(data) {
   let targetPlane = planesArr.find(plane => plane.id == data.id);
-  targetPlane.directionChanging = data.directionChanging; // -1; 0; +1
-  targetPlane.speedChanging = data.speedChanging; // -1; 0; +1
+  
+  if (data.directionChanging != 0) {
+    targetPlane.direction = (360 + targetPlane.direction + data.directionChanging * turnSpeed) % 360;
+  }
+
+  if (data.speedChanging != 0) {
+    if (data.speedChanging > 0) targetPlane.speed = (targetPlane.speed < maxSpeed) ? targetPlane.speed + accHard : maxSpeed;
+    else targetPlane.speed = (targetPlane.speed > minSpeed) ? targetPlane.speed - accHard : minSpeed;
+  } else if (targetPlane.speed != cruiseSpeed) {
+    if (targetPlane.speed < cruiseSpeed) targetPlane.speed = ((targetPlane.speed + accPass) < cruiseSpeed) ? (targetPlane.speed + accPass) : cruiseSpeed;
+    if (targetPlane.speed > cruiseSpeed) targetPlane.speed = ((targetPlane.speed - accPass) > cruiseSpeed) ? (targetPlane.speed - accPass) : cruiseSpeed;
+  }
 }
 
 function updateLoop() {
