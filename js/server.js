@@ -1,9 +1,9 @@
 'use strict';
 
-const lastUpdateDate = 'SV-004 [13-05-2022]';
+const lastUpdateDate = 'SV-005 [13-05-2022]';
 console.log(`last update date is ${lastUpdateDate}`);
 
-const updateTimeout = 4; 
+const updateTimeout = 10; 
 let lastUpdateTimeStamp;
 
 /*****************
