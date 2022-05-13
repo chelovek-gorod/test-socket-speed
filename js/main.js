@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-016 [13-05-2022]';
+const client_version = 'CV-017 [13-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -111,8 +111,8 @@ class Cloud {
 const smokeImage = new Image();
 smokeImage.src = './src/images/smoke.png';
 
-const smokeWidth = 100;
-const smokeHeight = 100;
+const smokeWidth = 50;
+const smokeHeight = 50;
 const smokeMaxFrame = smokeWidth * 10;
 
 let smokeArr = [];
