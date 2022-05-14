@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-002 [14-05-2022]';
+const client_version = 'CV-003 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -118,24 +118,32 @@ class Cloud {
 };
 
 const smokeImage = new Image();
-smokeImage.src = './src/images/smoke38.png';
+smokeImage.src = './src/images/smoke32.png';
 
-const smokeWidth = 38;
-const smokeHeight = 38;
-const smokeMaxFrame = smokeWidth * 61;
+const smokeWidth = 32;
+const smokeHeight = 32;
+const smokeStepsX = 10;
+const smokeStepsY = 9;
 
 let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.frame = 0;
+    this.x = x - 16;
+    this.y = y - 16;
+    this.frameX = 0;
+    this.frameY = 0;
+    this.maxFrameX = smokeWidth * smokeStepsX;
+    this.maxFrameY = smokeHeight * smokeStepsY;
   }
 
   draw() {
-    ctx.drawImage(smokeImage, this.frame, 0, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    this.frame += smokeWidth;
+    ctx.drawImage(smokeImage, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
+    this.frameX += smokeWidth;
+    if (this.frameX === this.maxFrameX) {
+      this.frameX = 0;
+      this.frameY += smokeHeight;
+    }
   }
 };
 
@@ -205,7 +213,7 @@ function animate() {
     lowCloudsArr.forEach( cloud => cloud.draw() );
 
     smokeArr.forEach( smoke => smoke.draw() );
-    smokeArr = smokeArr.filter(item => item.frame < 2318);
+    smokeArr = smokeArr.filter(item => item.frameY < item.maxFrameY);
 
     let planeFrame = (frame % planeFrames) * planeWidth;
     planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
