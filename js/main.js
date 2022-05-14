@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-007 [14-05-2022]';
+const client_version = 'CV-008 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -118,7 +118,7 @@ class Cloud {
 };
 
 const smokeImage = new Image();
-smokeImage.src = './src/images/smoke32.png';
+smokeImage.src = './src/images/smoke32_10x9.png';
 
 const smokeWidth = 32;
 const smokeHeight = 32;
@@ -197,7 +197,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 3 === 0) smokeArr.push(new Smoke(x, y));
+  if (frame % 2 === 0) smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
