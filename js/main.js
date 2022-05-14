@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-001 [14-05-2022]';
+const client_version = 'CV-002 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -128,14 +128,14 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x - 19;
-    this.y = y - 19;
-    this.frameX = 0;
+    this.x = x;
+    this.y = y;
+    this.frame = 0;
   }
 
   draw() {
     ctx.drawImage(smokeImage, this.frame, 0, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    this.frameX += smokeWidth;
+    this.frame += smokeWidth;
   }
 };
 
@@ -205,8 +205,7 @@ function animate() {
     lowCloudsArr.forEach( cloud => cloud.draw() );
 
     smokeArr.forEach( smoke => smoke.draw() );
-    smokeArr = smokeArr.filter(item => item.frameX < 2318);
-    console.log('smokes =', smokeArr.length);
+    smokeArr = smokeArr.filter(item => item.frame < 2318);
 
     let planeFrame = (frame % planeFrames) * planeWidth;
     planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
