@@ -140,19 +140,19 @@ class Smoke {
 };
 
 // constructor(type, img, speed, y)
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, .2, 0)), 600);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, .3, 330)), 1800);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, .1, 550)), 3000);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, .2, 110)), 4200);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, .3, 440)), 5400);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, .1, 220)), 6600);
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, .2, 0)), 0);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, .3, 330)), 3000);
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, .1, 550)), 6000);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, .2, 110)), 9000);
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, .3, 440)), 12000);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, .1, 220)), 15000);
 
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, .1, 385)), 1200);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, .2, 165)), 2400);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, .3, 495)), 3600);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, .1, 275)), 4800);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, .2, 600)), 6000);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, .3, 55)), 7200);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, .1, 385)), 1500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, .2, 165)), 4500);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, .3, 495)), 7500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, .1, 275)), 10500);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, .2, 600)), 13500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, .3, 55)), 16500);
 
 function getRandomInt(size) {
   return Math.floor(Math.random() * size);
@@ -189,7 +189,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 12 === 0) smokeArr.push(new Smoke(x, y));
+  if (frame % 6 === 0) smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
@@ -206,6 +206,7 @@ function animate() {
 
     smokeArr.forEach( smoke => smoke.draw() );
     smokeArr = smokeArr.filter(item => item.frameX < 2318);
+    console.log('smokes =', smokeArr.length);
 
     let planeFrame = (frame % planeFrames) * planeWidth;
     planesArr.forEach( plane => drawPlane (planeImage, planeFrame, plane) );
