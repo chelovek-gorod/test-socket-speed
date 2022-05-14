@@ -7,11 +7,21 @@ console.log('CLIENT', client_version);
  *  MUSIC
  */
 
-const propellerSound = new Audio();
-propellerSound.src = './src/images/propeller.mp3';
-propellerSound.play();
-musicBG.addEventListener('ended', () => {
-  propellerSound.play();
+const propellerSound1= new Audio();
+const propellerSound2 = new Audio();
+propellerSound1.src = propellerSound2.src = './src/sounds/propeller.mp3';
+
+document.body.onclick = function() {
+  propellerSound1.play();
+  setTimeout(() => propellerSound2.play(), 9000);
+};
+
+propellerSound1.addEventListener('ended', () => {
+  propellerSound1.play();
+});
+
+propellerSound2.addEventListener('ended', () => {
+  propellerSound2.play();
 });
 
 /*****************
