@@ -7,7 +7,7 @@ console.log('CLIENT', client_version);
  *  MUSIC
  */
 
-const propellerSound1= new Audio();
+const propellerSound1 = new Audio();
 const propellerSound2 = new Audio();
 propellerSound1.src = propellerSound2.src = './src/sounds/propeller.mp3';
 
