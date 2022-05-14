@@ -125,7 +125,7 @@ class Cloud {
 };
 
 const smokeImage = new Image();
-smokeImage.src = './src/images/smoke32_10x9.png';
+smokeImage.src = './src/images/smoke32_5x4.png';
 
 const smokeWidth = 32;
 const smokeHeight = 32;
@@ -158,19 +158,19 @@ class Smoke {
 };
 
 // constructor(type, img, speed, x, y)
-lowCloudsArr.push(new Cloud(64, 0, 2, 110, 0));
-lowCloudsArr.push(new Cloud(83, 1, 3, 990, 330));
-lowCloudsArr.push(new Cloud(64, 2, 3, 880, 550));
-lowCloudsArr.push(new Cloud(83, 3, 2, 330, 110));
-lowCloudsArr.push(new Cloud(64, 4, 2, 1200, 440));
-lowCloudsArr.push(new Cloud(83, 5, 3, 220, 220));
+lowCloudsArr.push(new Cloud(64, 0, .2, 110, 0));
+lowCloudsArr.push(new Cloud(83, 1, .3, 990, 330));
+lowCloudsArr.push(new Cloud(64, 2, .5, 880, 550));
+lowCloudsArr.push(new Cloud(83, 3, .4, 330, 110));
+lowCloudsArr.push(new Cloud(64, 4, .2, 1200, 440));
+lowCloudsArr.push(new Cloud(83, 5, .3, 220, 220));
 
-heighCloudsArr.push(new Cloud(83, 0, 3, 550, 385));
-heighCloudsArr.push(new Cloud(64, 1, 3, 1100, 165));
-heighCloudsArr.push(new Cloud(83, 2, 2, 440, 495));
-heighCloudsArr.push(new Cloud(64, 3, 3, 770, 275));
-heighCloudsArr.push(new Cloud(83, 4, 2, 0, 600));
-heighCloudsArr.push(new Cloud(64, 5, 2, 660, 55));
+heighCloudsArr.push(new Cloud(83, 0, .5, 550, 385));
+heighCloudsArr.push(new Cloud(64, 1, .4, 1100, 165));
+heighCloudsArr.push(new Cloud(83, 2, .2, 440, 495));
+heighCloudsArr.push(new Cloud(64, 3, .3, 770, 275));
+heighCloudsArr.push(new Cloud(83, 4, .5, 0, 600));
+heighCloudsArr.push(new Cloud(64, 5, .4, 660, 55));
 
 function getRandomInt(size) {
   return Math.floor(Math.random() * size);
@@ -213,7 +213,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 3 === 0) smokeArr.push(new Smoke(x, y));
+  if (frame % 2 === 0) smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
