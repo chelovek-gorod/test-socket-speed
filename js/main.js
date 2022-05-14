@@ -99,20 +99,20 @@ let heighCloudsArr = [];
 let lowCloudsArr = [];
 
 class Cloud {
-  constructor(type, img, speed, y) {
+  constructor(type, img, speed, x, y) {
     this.img = (type === 64) ? cloudImage64 : cloudImage83;
     this.frameX = img * ((type === 64) ? cloud64Width : cloud83Width);
     this.frameY = getRandomInt(2) * ((type === 64) ? cloud64Height : cloud83Height);
     this.width = (type === 64) ? cloud64Width : cloud83Width;
     this.height = (type === 64) ? cloud64Height : cloud83Height;
-    this.x = C_WIDTH + ((type === 64) ? cloud64Width : cloud83Width);
+    this.x = x - ((type === 64) ? cloud64Width : cloud83Width) / 2;
     this.y = y - ((type === 64) ? cloud64Height : cloud83Height) / 2;
     this.speed = 1 + speed;
   }
 
   draw() {
     ctx.drawImage(this.img, this.frameX, this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
-    this.x -= this.speed;
+    this.x = ~~ (0.5 + this.speed + this.x);
     if (this.x < -this.width) this.x = C_WIDTH + this.width;
   }
 };
@@ -150,20 +150,20 @@ class Smoke {
   }
 };
 
-// constructor(type, img, speed, y)
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, .2, 0)), 0);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, .3, 330)), 3000);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, .1, 550)), 6000);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, .2, 110)), 9000);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, .3, 440)), 12000);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, .1, 220)), 15000);
+// constructor(type, img, speed, x, y)
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, .2, 110, 0)), 0);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, .3, 990, 330)), 3000);
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, .1, 880, 550)), 6000);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, .2, 330, 110)), 9000);
+setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, .3, 1200, 440)), 12000);
+setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, .1, 220, 220)), 15000);
 
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, .1, 385)), 1500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, .2, 165)), 4500);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, .3, 495)), 7500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, .1, 275)), 10500);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, .2, 600)), 13500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, .3, 55)), 16500);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, .1, 550, 385)), 1500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, .2, 1100, 165)), 4500);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, .3, 440, 495)), 7500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, .1, 770, 275)), 10500);
+setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, .2, 0, 600)), 13500);
+setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, .3, 660, 55)), 16500);
 
 function getRandomInt(size) {
   return Math.floor(Math.random() * size);
@@ -181,6 +181,9 @@ function drawPlane (image, frame, plane) {
   let angle = RAD * plane.direction;
   x += Math.cos(angle) * currentSpeed;
   y += Math.sin(angle) * currentSpeed;
+
+  x = ~~ (0.5 + x);
+  y = ~~ (0.5 + y);
 
   if (x > (C_WIDTH + planeWidth)) x -= C_WIDTH + planeWidth;
   else if (x < -planeWidth) x += C_WIDTH + planeWidth;
@@ -211,7 +214,7 @@ function animate() {
   ctx.clearRect(0, 0, C_WIDTH, C_HEIGHT);
     
   if (connectionIs) {
-    ctx.drawImage(background,0,0);
+    //ctx.drawImage(background,0,0);
 
     lowCloudsArr.forEach( cloud => cloud.draw() );
 
