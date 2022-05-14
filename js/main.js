@@ -4,6 +4,17 @@ const client_version = 'CV-019 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
+ *  MUSIC
+ */
+
+const propellerSound = new Audio();
+propellerSound.src = './src/images/propeller.mp3';
+propellerSound.play();
+musicBG.addEventListener('ended', () => {
+  propellerSound.play();
+});
+
+/*****************
  *  INTERFACE
  */
 
