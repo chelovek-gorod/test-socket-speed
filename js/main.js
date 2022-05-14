@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-012 [14-05-2022]';
+const client_version = 'CV-013 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -199,10 +199,10 @@ function drawPlane (image, frame, plane) {
   else if (y < -planeHeight) y += C_HEIGHT + planeWidth;
   
   ctx.save();
-  ctx.translate(x - planeHalfWidth, y - planeHalfHeight);
+  ctx.translate(x, y);
   ctx.rotate(direction * RAD);
-  ctx.translate(-(x - planeHalfWidth), -(y - planeHalfHeight));
-  ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
+  ctx.translate(-(x), -(y));
+  ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x - planeHalfWidth, y - planeHalfHeight, planeWidth, planeHeight);
   ctx.restore();
 
   if (id === myId) {
