@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-018 [14-05-2022]';
+const client_version = 'CV-019 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -129,8 +129,8 @@ smokeImage.src = './src/images/smoke32_10x9.png';
 
 const smokeWidth = 32;
 const smokeHeight = 32;
-const smokeStepsX = 10;
-const smokeStepsY = 9;
+const smokeStepsX = 5;
+const smokeStepsY = 4;
 
 let smokeArr = [];
 
@@ -146,7 +146,7 @@ class Smoke {
 
   draw() {
     ctx.drawImage(smokeImage, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    if (frame % 2 === 0) {
+    if (frame % 6 === 0) {
       this.frameX += smokeWidth;
 
       if (this.frameX === this.maxFrameX) {
@@ -213,7 +213,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 2 === 0) smokeArr.push(new Smoke(x, y));
+  if (frame % 3 === 0) smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
