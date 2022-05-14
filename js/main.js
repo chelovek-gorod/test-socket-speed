@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-015 [14-05-2022]';
+const client_version = 'CV-016 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -83,8 +83,15 @@ const planeHalfHeight = 50;
 
 let planesArr = [];
 
+let clouds64ReadyIs = false;
+let clouds83ReadyIs = false;
+
 const cloudImage64 = new Image();
 cloudImage64.src = './src/images/clouds_64.png';
+cloudImage64.loading = function() {
+  clouds64ReadyIs = true;
+  if (clouds64ReadyIs && clouds83ReadyIs) addClouds();
+}
 
 const cloud64Width = 600;
 const cloud64Height = 400;
@@ -93,6 +100,10 @@ const cloud64HalfHeight = 200;
 
 const cloudImage83 = new Image();
 cloudImage83.src = './src/images/clouds_83.png';
+cloudImage83.loading = function() {
+  clouds83ReadyIs = true;
+  if (clouds64ReadyIs && clouds83ReadyIs) addClouds();
+}
 
 const cloud83Width = 800;
 const cloud83Height = 300;
@@ -154,20 +165,22 @@ class Smoke {
   }
 };
 
-// constructor(type, img, speed, x, y)
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, 2, 110, 0)), 0);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, 3, 990, 330)), 3000);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, 3, 880, 550)), 6000);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, 2, 330, 110)), 9000);
-setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, 2, 1200, 440)), 12000);
-setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, 3, 220, 220)), 15000);
+function addClouds() {
+  // constructor(type, img, speed, x, y)
+  setTimeout(() => lowCloudsArr.push(new Cloud(64, 0, 2, 110, 0)), 0);
+  setTimeout(() => lowCloudsArr.push(new Cloud(83, 1, 3, 990, 330)), 3000);
+  setTimeout(() => lowCloudsArr.push(new Cloud(64, 2, 3, 880, 550)), 6000);
+  setTimeout(() => lowCloudsArr.push(new Cloud(83, 3, 2, 330, 110)), 9000);
+  setTimeout(() => lowCloudsArr.push(new Cloud(64, 4, 2, 1200, 440)), 12000);
+  setTimeout(() => lowCloudsArr.push(new Cloud(83, 5, 3, 220, 220)), 15000);
 
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, 3, 550, 385)), 1500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, 3, 1100, 165)), 4500);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, 2, 440, 495)), 7500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, 3, 770, 275)), 10500);
-setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, 2, 0, 600)), 13500);
-setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, 2, 660, 55)), 16500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(83, 0, 3, 550, 385)), 1500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(64, 1, 3, 1100, 165)), 4500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(83, 2, 2, 440, 495)), 7500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(64, 3, 3, 770, 275)), 10500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(83, 4, 2, 0, 600)), 13500);
+  setTimeout(() => heighCloudsArr.push(new Cloud(64, 5, 2, 660, 55)), 16500);
+}
 
 function getRandomInt(size) {
   return Math.floor(Math.random() * size);
