@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-013 [14-05-2022]';
+const client_version = 'CV-014 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -116,7 +116,7 @@ class Cloud {
 
   draw() {
     ctx.drawImage(this.img, this.frameX, this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
-    this.x += this.speed;
+    this.x -= this.speed;
     if (this.x < -this.width) this.x = C_WIDTH;
   }
 };
@@ -133,8 +133,8 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = (x + 32.5) | 0;  
-    this.y = (y + 32.5) | 0;
+    this.x = (x - 16.5) | 0;  
+    this.y = (y - 16.5) | 0;
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrameX = smokeWidth * smokeStepsX;
