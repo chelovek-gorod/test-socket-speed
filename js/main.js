@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-016 [14-05-2022]';
+const client_version = 'CV-017 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -88,7 +88,7 @@ let clouds83ReadyIs = false;
 
 const cloudImage64 = new Image();
 cloudImage64.src = './src/images/clouds_64.png';
-cloudImage64.loading = function() {
+cloudImage64.onload = function() {
   clouds64ReadyIs = true;
   if (clouds64ReadyIs && clouds83ReadyIs) addClouds();
 }
@@ -100,7 +100,7 @@ const cloud64HalfHeight = 200;
 
 const cloudImage83 = new Image();
 cloudImage83.src = './src/images/clouds_83.png';
-cloudImage83.loading = function() {
+cloudImage83.onload = function() {
   clouds83ReadyIs = true;
   if (clouds64ReadyIs && clouds83ReadyIs) addClouds();
 }
