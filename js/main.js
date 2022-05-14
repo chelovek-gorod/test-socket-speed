@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-011 [14-05-2022]';
+const client_version = 'CV-012 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -88,12 +88,16 @@ cloudImage64.src = './src/images/clouds_64.png';
 
 const cloud64Width = 600;
 const cloud64Height = 400;
+const cloud64HalfWidth = 300;
+const cloud64HalfHeight = 200;
 
 const cloudImage83 = new Image();
 cloudImage83.src = './src/images/clouds_83.png';
 
 const cloud83Width = 800;
 const cloud83Height = 300;
+const cloud83HalfWidth = 400;
+const cloud83HalfHeight = 150;
 
 let heighCloudsArr = [];
 let lowCloudsArr = [];
@@ -105,15 +109,15 @@ class Cloud {
     this.frameY = getRandomInt(2) * ((type === 64) ? cloud64Height : cloud83Height);
     this.width = (type === 64) ? cloud64Width : cloud83Width;
     this.height = (type === 64) ? cloud64Height : cloud83Height;
-    this.x = x - ((type === 64) ? cloud64Width : cloud83Width) / 2;
-    this.y = y - ((type === 64) ? cloud64Height : cloud83Height) / 2;
+    this.x = x - (type === 64) ? cloud64HalfWidth : cloud83HalfWidth;
+    this.y = y - (type === 64) ? cloud64HalfHeight : cloud83HalfHeight;
     this.speed = speed;
   }
 
   draw() {
     ctx.drawImage(this.img, this.frameX, this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
     this.x += this.speed;
-    if (this.x < -this.width) this.x = C_WIDTH + this.width;
+    if (this.x < -this.width) this.x = C_WIDTH;
   }
 };
 
@@ -195,9 +199,9 @@ function drawPlane (image, frame, plane) {
   else if (y < -planeHeight) y += C_HEIGHT + planeWidth;
   
   ctx.save();
-  ctx.translate(x + planeHalfWidth, y + planeHalfHeight);
+  ctx.translate(x - planeHalfWidth, y - planeHalfHeight);
   ctx.rotate(direction * RAD);
-  ctx.translate(-(x + planeHalfWidth), -(y + planeHalfHeight));
+  ctx.translate(-(x - planeHalfWidth), -(y - planeHalfHeight));
   ctx.drawImage(image, frame, frameY, planeWidth, planeHeight, x, y, planeWidth, planeHeight);
   ctx.restore();
 
