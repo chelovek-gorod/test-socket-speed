@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-008 [14-05-2022]';
+const client_version = 'CV-009 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -139,10 +139,13 @@ class Smoke {
 
   draw() {
     ctx.drawImage(smokeImage, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    this.frameX += smokeWidth;
-    if (this.frameX === this.maxFrameX) {
-      this.frameX = 0;
-      this.frameY += smokeHeight;
+    if (frame % 2 === 0) {
+      this.frameX += smokeWidth;
+
+      if (this.frameX === this.maxFrameX) {
+        this.frameX = 0;
+        this.frameY += smokeHeight;
+      }
     }
   }
 };
