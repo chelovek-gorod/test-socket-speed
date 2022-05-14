@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-005 [14-05-2022]';
+const client_version = 'CV-006 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -197,7 +197,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  smokeArr.push(new Smoke(x, y));
+  if (frame % 2 === 0) smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
