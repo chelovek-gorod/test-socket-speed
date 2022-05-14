@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-014 [14-05-2022]';
+const client_version = 'CV-015 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -109,8 +109,8 @@ class Cloud {
     this.frameY = getRandomInt(2) * ((type === 64) ? cloud64Height : cloud83Height);
     this.width = (type === 64) ? cloud64Width : cloud83Width;
     this.height = (type === 64) ? cloud64Height : cloud83Height;
-    this.x = x - (type === 64) ? cloud64HalfWidth : cloud83HalfWidth;
-    this.y = y - (type === 64) ? cloud64HalfHeight : cloud83HalfHeight;
+    this.x = x - ((type === 64) ? cloud64HalfWidth : cloud83HalfWidth);
+    this.y = y - ((type === 64) ? cloud64HalfHeight : cloud83HalfHeight);
     this.speed = speed;
   }
 
