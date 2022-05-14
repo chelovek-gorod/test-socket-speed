@@ -1,6 +1,6 @@
 'use strict'
 
-const client_version = 'CV-004 [14-05-2022]';
+const client_version = 'CV-005 [14-05-2022]';
 console.log('CLIENT', client_version);
 
 /*****************
@@ -129,8 +129,8 @@ let smokeArr = [];
 
 class Smoke {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    this.x = x + 32;
+    this.y = y + 32;
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrameX = smokeWidth * smokeStepsX;
@@ -197,7 +197,7 @@ function drawPlane (image, frame, plane) {
     mySpeed = speed;
   }
 
-  if (frame % 3 === 0) smokeArr.push(new Smoke(x, y));
+  smokeArr.push(new Smoke(x, y));
 }
 
 let frame = 0;
