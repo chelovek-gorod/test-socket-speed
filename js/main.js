@@ -146,12 +146,12 @@ class Cloud {
 };
 
 const smokeImage = new Image();
-smokeImage.src = './src/images/smoke32_5x4.png';
+smokeImage.src = './src/images/smoke32_10x8.png';
 
 const smokeWidth = 32;
 const smokeHeight = 32;
-const smokeStepsX = 5;
-const smokeStepsY = 4;
+const smokeStepsX = 10;
+const smokeStepsY = 8;
 
 let smokeArr = [];
 
@@ -167,7 +167,7 @@ class Smoke {
 
   draw() {
     ctx.drawImage(smokeImage, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
-    if (frame % 6 === 0) {
+    if (frame % 3 === 0) {
       this.frameX += smokeWidth;
 
       if (this.frameX === this.maxFrameX) {
@@ -257,7 +257,7 @@ function animate() {
 
     heighCloudsArr.forEach( cloud => cloud.draw() );
 
-    if (frame % 12 == 0) {
+    if (frame % 6 == 0) {
       clientsCounter.innerText = planesArr.length;
       directionSpan.innerHTML = myDirection;
       speedSpan.innerHTML = Math.round(mySpeed * speedCountK);
