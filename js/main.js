@@ -340,7 +340,7 @@ function getConnect(data) {
 function getUpdate(data) {
   planesArr = data.planesArr;
   lastUpdateTimeStamp = Date.now() - data.timeout;
-  
+
   if (planesArr.length > 0) connectionIs = true;
   else connectionIs = false;
 }
