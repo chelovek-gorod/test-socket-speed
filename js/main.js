@@ -281,6 +281,9 @@ animate();
 const socketURL = 'wss://mars-server-euro.herokuapp.com';
 let SOCKET;
 
+// user key generator
+const myKey = Math.floor(Math.random() * (9999 - 1000)) + 1000;
+
 function connection() {
   console.log('-- connection request --');
 
@@ -288,7 +291,7 @@ function connection() {
 
   socket.onopen = function () {
     console.log('-- socket on open-- ');
-    socket.send(JSON.stringify({ action: 'connect' }));
+    socket.send(JSON.stringify({ action: 'connect', data: myKey }));
   };
   
   socket.onmessage = function (message) {
@@ -350,7 +353,7 @@ function sendUpdate() {
   let speedChanging = (accelerationIs != slowdownIs) ? (slowdownIs ? -1 : 1) : 0;
 
   if (directionChanging !== 0 || speedChanging !== 0) {
-    SOCKET.send(JSON.stringify({ action: 'update', data: { id : myId, directionChanging : directionChanging, speedChanging : speedChanging } }));
+    SOCKET.send(JSON.stringify({ action: 'update', data: { id : myId, key : myKey, directionChanging : directionChanging, speedChanging : speedChanging } }));
   }
 }
 
