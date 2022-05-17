@@ -32,7 +32,8 @@ body {
 }
 
 #canvas {
-    background-image: url(../src/images/bg.jpg);
+    /*background-image: url(../src/images/bg.jpg);*/
+    background-image: url("../src/images/map.jpg");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
