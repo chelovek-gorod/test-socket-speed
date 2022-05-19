@@ -208,6 +208,7 @@ let heighCloudsArr = [];
 let lowCloudsArr = [];
 
 class Cloud {
+
   constructor(type, img, speed, x, y) {
     this.img = (type === 64) ? cloudImage64 : cloudImage83;
     this.frameX = img * ((type === 64) ? cloud64Width : cloud83Width);
@@ -224,6 +225,7 @@ class Cloud {
     this.x -= this.speed;
     if (this.x < -this.width) this.x = C_WIDTH;
   }
+
 };
 
 function setClouds() {
@@ -259,6 +261,7 @@ const smokeStepsY = 8;
 let smokeArr = [];
 
 class Smoke {
+
   constructor(x, y) {
     this.x = x - 16; // (x - 15.5) | 0;  
     this.y = y - 16; // (y - 15.5) | 0;
@@ -279,6 +282,7 @@ class Smoke {
       }
     }
   }
+
 };
 
 // MISSILE SMOKE
@@ -294,6 +298,7 @@ const missileSmokeStepsY = 8;
 let missileSmokeArr = [];
 
 class MissileSmoke {
+
   constructor(x, y) {
     this.x = x - 8; // (x - 7.5) | 0;  
     this.y = y - 8; // (y - 7.5) | 0;
@@ -313,6 +318,7 @@ class MissileSmoke {
       this.frameY += missileSmokeHeight;
     }
   }
+
 };
 
 // EXPLOSION
@@ -328,6 +334,7 @@ const explosionStepsY = 8;
 let explosionsArr = [];
 
 class Explosion {
+
   constructor(x, y) {
     this.x = x - 128; // (x - 127.5) | 0;  
     this.y = y - 128; // (y - 127.5) | 0;
@@ -347,6 +354,7 @@ class Explosion {
       this.frameY += explosionHeight;
     }
   }
+
 };
 
 // SPARKS
@@ -361,6 +369,7 @@ const sparkStepsX = 9;
 let sparksArr = [];
 
 class Spark {
+
   constructor(x, y) {
     this.x = x - 16; // (x - 127.5) | 0;  
     this.y = y - 16; // (y - 127.5) | 0;
@@ -373,6 +382,7 @@ class Spark {
 
     this.frameX += sparkWidth;
   }
+
 };
 
 // DRAW
