@@ -62,12 +62,14 @@ const connectionId = document.getElementById('connectionId');
 const directionSpan = document.getElementById('directionSpan');
 const speedSpan = document.getElementById('speedSpan');
 const hpSpan = document.getElementById('hpSpan');
+const missilesSpan = document.getElementById('missilesSpan');
 
 let connectionIs = false;
 let myId;
 let mySpeed = 0;
 let myDirection = 0;
 let myHP = 0;
+let myMissiles;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
@@ -397,7 +399,7 @@ class Spark {
 // DRAW
 
 function drawPlane (plane, frame) {
-  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp } = plane;
+  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp, missiles } = plane;
   let frameY = planeHeight;
 
   let currentSpeed = speed * speedModifier;
@@ -422,6 +424,7 @@ function drawPlane (plane, frame) {
     myDirection = direction;
     mySpeed = speed;
     myHP = hp;
+    myMissiles = missiles;
   }
   
   ctx.save();
@@ -519,6 +522,7 @@ function animate() {
       directionSpan.innerHTML = Math.round((360 + myDirection) % 360);
       speedSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
       hpSpan.innerHTML = myHP;
+      missilesSpan = myMissiles;
     }
   }
 
