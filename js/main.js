@@ -61,11 +61,13 @@ const connectionId = document.getElementById('connectionId');
 
 const directionSpan = document.getElementById('directionSpan');
 const speedSpan = document.getElementById('speedSpan');
+const hpSpan = document.getElementById('hpSpan');
 
 let connectionIs = false;
 let myId;
 let mySpeed = 0;
 let myDirection = 0;
+let myHP = 0;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
@@ -253,6 +255,12 @@ function getRandomInt(size) {
 const smokeImage = new Image();
 smokeImage.src = './src/images/smoke32_10x8.png';
 
+const smokeGrayImage = new Image();
+smokeGrayImage.src = './src/images/smoke_gray32_10x8.png';
+
+const smokeDarkImage = new Image();
+smokeDarkImage.src = './src/images/smoke_dark32_10x8.png';
+
 const smokeWidth = 32;
 const smokeHeight = 32;
 const smokeStepsX = 10;
@@ -262,7 +270,8 @@ let smokeArr = [];
 
 class Smoke {
 
-  constructor(x, y) {
+  constructor(x, y, image) {
+    this.image = image
     this.x = x - 16; // (x - 15.5) | 0;  
     this.y = y - 16; // (y - 15.5) | 0;
     this.frameX = 0;
@@ -272,7 +281,7 @@ class Smoke {
   }
 
   draw() {
-    ctx.drawImage(smokeImage, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
+    ctx.drawImage(this.image, this.frameX, this.frameY, smokeWidth, smokeHeight, this.x, this.y, smokeWidth, smokeHeight);
     if (frame % 3 === 0) {
       this.frameX += smokeWidth;
 
@@ -388,7 +397,7 @@ class Spark {
 // DRAW
 
 function drawPlane (plane, frame) {
-  let { id, x, y, direction, angle, angleX, angleY, speed } = plane;
+  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp } = plane;
   let frameY = planeHeight;
 
   let currentSpeed = speed * speedModifier;
@@ -412,6 +421,7 @@ function drawPlane (plane, frame) {
     frameY = 0;
     myDirection = direction;
     mySpeed = speed;
+    myHP = hp;
   }
   
   ctx.save();
@@ -421,7 +431,8 @@ function drawPlane (plane, frame) {
   ctx.drawImage(planeImage, frame, frameY, planeWidth, planeHeight, x - planeHalfWidth, y - planeHalfHeight, planeWidth, planeHeight);
   ctx.restore();
 
-  smokeArr.push(new Smoke(x, y));
+  let smokeImg = (hp > half_hp) ? smokeImage : ( (hp < low_hp) ? smokeGrayImage : smokeDarkImage);
+  smokeArr.push(new Smoke(x, y, smokeImg));
 }
 
 function drawMissile(missile) {
@@ -507,6 +518,7 @@ function animate() {
       clientsCounter.innerText = planesArr.length;
       directionSpan.innerHTML = Math.round((360 + myDirection) % 360);
       speedSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
+      hpSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
     }
   }
 
