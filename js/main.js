@@ -15,16 +15,17 @@ function test() {
   if (testTimeStamp) testArr.push(time - testTimeStamp);
   testTimeStamp = time;
   let testArrSize = testArr.length;
-  if (testArrSize > 5000) {
+  if (testArrSize > 9999) {
     let min = Infinity;
     let max = 0;
     let sum = 0;
-    for (let i = 0; i < testArrSize; i++) {
-      if (testArr[i] > max) max = testArr[i];
-      if (testArr[i] < min) min = testArr[i];
-      sum += testArr[i];
-    }
-    console.log(`TEST: min = ${min}; mid = ${Math.ceil(sum / testArrSize)}; max = ${max}`);
+    testArr.forEach(value => {
+      if (value < min) min = value;
+      if (value > max) max = value;
+      sum += value;
+    });
+    let mid = Math.ceil(sum / testArrSize);
+    console.log(`TEST: min = ${min}; mid = ${mid}; max = ${max}; (count timeout = ${Date.now() - time})`);
     testArr = [];
   }
 }
