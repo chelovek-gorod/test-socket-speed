@@ -601,7 +601,8 @@ function sendUpdate() {
         key : myKey,
         directionChanging : directionChanging,
         speedChanging : speedChanging,
-        missileLaunchIs : missileLaunchIs
+        missileLaunchIs : missileLaunchIs,
+        shootingIs : shootingIs
       }
     }));
 
