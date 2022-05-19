@@ -117,8 +117,8 @@ document.addEventListener('keydown', (event) => {
     case 'ArrowUp' : accelerationIs = true; break;
     case 'ArrowDown' : slowdownIs = true; break;
 
-    case 'ControlRight' : missileLaunchIs = true; break;
-    case 'ControlLeft' : missileLaunchIs = true; break;
+    case 'AltRight' : missileLaunchIs = true; break;
+    case 'AltLeft' : missileLaunchIs = true; break;
 
     case 'Space' : shootingIs = true; break;
   }
@@ -136,8 +136,8 @@ document.addEventListener('keyup', (event) => {
     case 'ArrowUp' : accelerationIs = false; break;
     case 'ArrowDown' : slowdownIs = false; break;
 
-    case 'ControlRight' : missileLaunchIs = false; break;
-    case 'ControlLeft' : missileLaunchIs = false; break;
+    case 'AltRight' : missileLaunchIs = false; break;
+    case 'AltLeft' : missileLaunchIs = false; break;
 
     case 'Space' : shootingIs = false; break;
   }
@@ -603,7 +603,7 @@ function getConnect(data) {
   updateTimeout = data.updateTimeout;
   myId = data.id;
   connectionId.innerText = myId;
-  setInterval(sendUpdate, updateTimeout);
+  setInterval(sendUpdate, updateTimeout * 2);
 }
 
 function getUpdate(data) {
