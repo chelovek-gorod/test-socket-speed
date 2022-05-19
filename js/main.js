@@ -594,7 +594,7 @@ function sendUpdate() {
   let directionChanging = (toLeftIs != toRightIs) ? (toLeftIs ? -1 : 1) : 0;
   let speedChanging = (accelerationIs != slowdownIs) ? (slowdownIs ? -1 : 1) : 0;
 
-  if (directionChanging !== 0 || speedChanging !== 0 || missileLaunchIs) {
+  if (directionChanging !== 0 || speedChanging !== 0 || missileLaunchIs || shootingIs) {
     SOCKET.send(JSON.stringify({ action: 'update',
       data: {
         id : myId,
