@@ -518,7 +518,7 @@ function animate() {
       clientsCounter.innerText = planesArr.length;
       directionSpan.innerHTML = Math.round((360 + myDirection) % 360);
       speedSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
-      hpSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
+      hpSpan.innerHTML = hp;
     }
   }
 
