@@ -15,7 +15,7 @@ function test() {
   if (testTimeStamp) testArr.push(time - testTimeStamp);
   testTimeStamp = time;
   let testArrSize = testArr.length;
-  if (testArrSize > 9999) {
+  if (testArrSize > 999) {
     let min = Infinity;
     let max = 0;
     let sum = 0;
