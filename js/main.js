@@ -522,7 +522,7 @@ function animate() {
       directionSpan.innerHTML = Math.round((360 + myDirection) % 360);
       speedSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
       hpSpan.innerHTML = myHP;
-      missilesSpan = myMissiles;
+      missilesSpan.innerHTML = myMissiles;
     }
   }
 
