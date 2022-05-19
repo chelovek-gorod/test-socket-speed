@@ -181,7 +181,7 @@ let missilesArr = [];
 // BULLET
 
 const bulletImage = new Image();
-bulletImage.src = './src/images/bullet8.png';
+bulletImage.src = './src/images/bullet4.png';
 
 const bulletWidth = 4;
 const bulletHeight = 4;
