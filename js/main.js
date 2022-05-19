@@ -117,9 +117,7 @@ document.addEventListener('keydown', (event) => {
     case 'ArrowUp' : accelerationIs = true; break;
     case 'ArrowDown' : slowdownIs = true; break;
 
-    case 'AltRight' : missileLaunchIs = true; break;
-    case 'AltLeft' : missileLaunchIs = true; break;
-
+    case 'Enter' : missileLaunchIs = true; break;
     case 'Space' : shootingIs = true; break;
   }
 });
@@ -136,9 +134,7 @@ document.addEventListener('keyup', (event) => {
     case 'ArrowUp' : accelerationIs = false; break;
     case 'ArrowDown' : slowdownIs = false; break;
 
-    case 'AltRight' : missileLaunchIs = false; break;
-    case 'AltLeft' : missileLaunchIs = false; break;
-
+    case 'Enter' : missileLaunchIs = false; break;
     case 'Space' : shootingIs = false; break;
   }
   console.log('keypress', event.code);
