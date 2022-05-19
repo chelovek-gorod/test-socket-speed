@@ -431,7 +431,7 @@ function drawPlane (plane, frame) {
   ctx.drawImage(planeImage, frame, frameY, planeWidth, planeHeight, x - planeHalfWidth, y - planeHalfHeight, planeWidth, planeHeight);
   ctx.restore();
 
-  let smokeImg = (hp > half_hp) ? smokeImage : ( (hp < low_hp) ? smokeGrayImage : smokeDarkImage);
+  let smokeImg = (hp > half_hp) ? smokeImage : ( (hp > low_hp) ? smokeGrayImage : smokeDarkImage);
   smokeArr.push(new Smoke(x, y, smokeImg));
 }
 
