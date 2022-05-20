@@ -430,7 +430,7 @@ function drawPlane (plane, frame) {
     mySpeed = speed;
     myHP = hp;
     myMissiles = missiles;
-    myPlaneGunOverheat = planeGunOverheat;
+    myPlaneGunOverheat = Math.ceil(planeGunOverheat * 5);
     myPlaneGunOverheatIs = planeGunOverheatIs;
   }
   
