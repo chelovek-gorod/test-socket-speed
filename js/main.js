@@ -64,6 +64,8 @@ const directionSpan = document.getElementById('directionSpan');
 const speedSpan = document.getElementById('speedSpan');
 const hpSpan = document.getElementById('hpSpan');
 const missilesSpan = document.getElementById('missilesSpan');
+const gunOverheatSpan = document.getElementById('gunOverheatSpan');
+const gunOverheatIsSpan = document.getElementById('gunOverheatIsSpan');
 
 let connectionIs = false;
 let myId;
@@ -71,6 +73,9 @@ let mySpeed = 0;
 let myDirection = 0;
 let myHP = 0;
 let myMissiles;
+
+let myPlaneGunOverheat;
+let myPlaneGunOverheatIs;
 
 let updateTimeout;
 let lastUpdateTimeStamp;
@@ -399,7 +404,7 @@ class Spark {
 // DRAW
 
 function drawPlane (plane, frame) {
-  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp, missiles } = plane;
+  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp, missiles, planeGunOverheat, planeGunOverheatIs } = plane;
   let frameY = planeHeight;
 
   let currentSpeed = speed * speedModifier;
@@ -425,6 +430,8 @@ function drawPlane (plane, frame) {
     mySpeed = speed;
     myHP = hp;
     myMissiles = missiles;
+    myPlaneGunOverheat = planeGunOverheat;
+    myPlaneGunOverheatIs = planeGunOverheatIs;
   }
   
   ctx.save();
@@ -523,6 +530,9 @@ function animate() {
       speedSpan.innerHTML = Math.round(mySpeed * RealSpeedRatio);
       hpSpan.innerHTML = myHP;
       missilesSpan.innerHTML = myMissiles;
+      
+      gunOverheatSpan.innerHTML = myPlaneGunOverheatIs ? `<span class="OverheatColor">${myPlaneGunOverheat}</span>` : `${myPlaneGunOverheat}`;
+      gunOverheatIsSpan.innerHTML = myPlaneGunOverheatIs ? '<span class="OverheatColor">Overheat</span>' : '';
     }
   }
 
