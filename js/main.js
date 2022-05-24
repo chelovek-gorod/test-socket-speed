@@ -15,7 +15,7 @@ function test() {
   if (testTimeStamp) testArr.push(time - testTimeStamp);
   testTimeStamp = time;
   let testArrSize = testArr.length;
-  if (testArrSize > 999) {
+  if (testArrSize > 100) {
     let min = Infinity;
     let max = 0;
     let sum = 0;
@@ -404,7 +404,7 @@ class Spark {
 // DRAW
 
 function drawPlane (plane, frame) {
-  let { id, x, y, direction, angle, angleX, angleY, speed, hp, half_hp, low_hp, missiles, planeGunOverheat, planeGunOverheatIs } = plane;
+  let { id, x, y, direction, angle, angleX, angleY, speed, turnSpeed, hp, half_hp, low_hp, missiles, planeGunOverheat, planeGunOverheatIs } = plane;
   let frameY = planeHeight;
 
   let currentSpeed = speed * speedModifier;
@@ -550,7 +550,7 @@ animate();
 // 'ws://localhost:6789'
 // 'ws://192.168.100.51:6789'
 // 'ws://192.168.0.122:6789'
-const socketURL = 'wss://mars-game-server.herokuapp.com';
+const socketURL = 'ws://localhost:6789';
 let SOCKET;
 
 // user key generator
@@ -609,7 +609,7 @@ function getConnect(data) {
   updateTimeout = data.updateTimeout;
   myId = data.id;
   connectionId.innerText = myId;
-  setInterval(sendUpdate, updateTimeout * 2);
+  setInterval(sendUpdate, updateTimeout);
 }
 
 function getUpdate(data) {
