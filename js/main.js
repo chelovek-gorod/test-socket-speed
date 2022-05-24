@@ -95,7 +95,8 @@ let toRightIs = false;
 let turnSpeed = 0.5; // 0.5 -- 1 -- 1.5 -- 2.5 -- 4.5
 
 // speed and acceleration
-let RealSpeedRatio = 100;
+let RealSpeedRatio = 50;
+let RealOverheatRatio = 3;
 let minSpeed = 1;
 let cruiseSpeed = 2;
 let maxSpeed = 4;
@@ -430,7 +431,7 @@ function drawPlane (plane, frame) {
     mySpeed = speed;
     myHP = hp;
     myMissiles = missiles;
-    myPlaneGunOverheat = Math.ceil(planeGunOverheat * 5);
+    myPlaneGunOverheat = Math.ceil(planeGunOverheat * RealOverheatRatio);
     myPlaneGunOverheatIs = planeGunOverheatIs;
   }
   
